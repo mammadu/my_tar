@@ -51,6 +51,17 @@ void flag_hunter(int argc, char* argv[], flags* my_flags)
     }
 }
 
+void select_option (flags* my_flags)
+{
+    //Logic for the routing tof my tar 
+    //Option -f is obligatory Always 
+    
+
+    //
+
+}
+
+
 int main(int argc, char* argv[])
 {
     // check_permission(argv[1]);
@@ -61,6 +72,9 @@ int main(int argc, char* argv[])
     my_header = malloc(sizeof(header));
 
     flag_hunter(argc, argv, my_flags); 
+    
+    //Select option function To be implemented
+    
     printf("%d", my_flags->r);
     
 
