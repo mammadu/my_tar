@@ -1,13 +1,6 @@
 #include "my_tar.h"
 #include "my_c_functions.c"
 
-//ft. gives memory to structs
-void structs_initializer(flags* my_flags, header* my_header)
-{
-    my_flags = malloc(sizeof(flags));
-    my_header = malloc(sizeof(header));
-}
-
 //loops troug the argv string until it finds the flags 
 void flag_hunter(int argc, char* argv[], flags* my_flags)
 {
@@ -38,8 +31,9 @@ void flag_hunter(int argc, char* argv[], flags* my_flags)
                         my_flags->f = 1;
                         break;
                     default :
+                        //unsopported options
                         my_flags-> unknown = argv[i][j];
-                        break; 
+                        return; 
                 }
             }
         }
@@ -50,8 +44,10 @@ int main(int argc, char* argv[])
 {
     flags* my_flags;
     header* my_header;
-    structs_initializer(my_flags, my_header);
-    
+
+    my_flags = malloc(sizeof(flags));
+    my_header = malloc(sizeof(header));
+
     flag_hunter(argc, argv, my_flags); 
     printf("%d", my_flags->r);
     
