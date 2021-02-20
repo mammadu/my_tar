@@ -7,10 +7,25 @@
 # include <stdlib.h>
 # include <strings.h>
 
+//Struct to keep track of the passed flags
+
+typedef struct flag_structs
+{
+    int c;
+    int x;
+    int t;
+    int u;
+    int r;
+    char unknown;
+} flags;
+
+
+
 //Metadata header for collection of file data 
+
 typedef struct posix_header
 {                              /* byte offset */
-  char name[100];               /*   0 */
+  char name[100];               /*   0  	name of file*/
   char mode[8];                 /* 100 */
   char uid[8];                  /* 108 */
   char gid[8];                  /* 116 */
@@ -28,5 +43,11 @@ typedef struct posix_header
   char prefix[155];             /* 345 */
                                 /* 500 */
 } header;
+
+// Read block size.
+// Used 512 bytes to copy tar's block size. :)
+// Source: http://www.gnu.org/software/tar/manual/html_node/Blocking.html
+# define BLOCK_SIZE	(512)
+
 
 #endif
