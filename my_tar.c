@@ -9,7 +9,7 @@ void structs_initializer(flags* my_flags, header* my_header)
 }
 
 //loops troug the argv string until it finds the flags 
-void flag_hunter(int argc, char* argv[])
+void flag_hunter(int argc, char* argv[], flags* my_flags)
 {
     for(int i = 0; i < argc; i += 1)
     {
@@ -20,24 +20,26 @@ void flag_hunter(int argc, char* argv[])
                 switch(argv[i][j]) 
                 {
                     case 'c' :
-                        printf("Excellent!\n" );
+                        my_flags->c = 1;
                         break;
                     case 'r' :
-                        printf("RXcellent!\n" );
+                        my_flags->r = 1;
                         break;
                     case 't' :
-                        printf("Well done\n" );
+                        my_flags->t = 1;
                         break;
                     case 'u' :
-                        printf("You passed\n" );
+                        my_flags->u = 1;
                         break;
                     case 'x' :
-                        printf("Better try again\n" );
+                        my_flags->x = 1;
                         break;
                     case 'f':
-                        printf("failed\n");
-                default :
-                    printf("Invalid grade\n" );
+                        my_flags->f = 1;
+                        break;
+                    default :
+                        my_flags-> unknown = argv[i][j];
+                        break; 
                 }
             }
         }
@@ -50,8 +52,8 @@ int main(int argc, char* argv[])
     header* my_header;
     structs_initializer(my_flags, my_header);
     
-    flag_hunter(argc, argv); 
-
+    flag_hunter(argc, argv, my_flags); 
+    printf("%d", my_flags->r);
     
 
     return 0;
