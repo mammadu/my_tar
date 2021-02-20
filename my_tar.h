@@ -20,6 +20,7 @@ typedef struct flag_structs
     int t;
     int u;
     int r;
+    int f;
     char unknown;
 } flags;
 
