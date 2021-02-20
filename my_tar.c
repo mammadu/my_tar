@@ -53,7 +53,7 @@ void flag_hunter(int argc, char* argv[], flags* my_flags)
 
 int main(int argc, char* argv[])
 {
-    check_permission(argv[1]);
+    // check_permission(argv[1]);
     flags* my_flags;
     header* my_header;
 

@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "my_c_functions.h"
 
 
 //Struct to keep track of the passed flags
@@ -56,5 +57,6 @@ typedef struct posix_header
 
 int create_archive(char* archive_name);
 void check_permission(char* file_path);
+void flag_hunter(int argc, char* argv[], flags* my_flags);
 
 #endif

@@ -2,7 +2,7 @@
 #define my_c_functions_H
 #include <stdlib.h>
 #include <unistd.h>
-#include <stdio.h>//
+#include <stdio.h>
 
 char* my_strdup(char* param_1);
 
