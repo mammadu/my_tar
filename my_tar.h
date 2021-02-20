@@ -25,8 +25,6 @@ typedef struct flag_structs
     char unknown;
 } flags;
 
-
-
 //Metadata header for collection of file data 
 
 typedef struct posix_header

@@ -12,6 +12,16 @@ void check_permission(char* file_path)
     printf("%d\n", statbuf->st_mode);
 }
 
+void flag_initializer(flags* my_flags)
+{
+    my_flags->c = 0; 
+    my_flags->x = 0; 
+    my_flags->t = 0; 
+    my_flags->u = 0;
+    my_flags->r = 0; 
+    my_flags->f = 0;    
+}
+
 //loops troug the argv string until it finds the flags 
 void flag_hunter(int argc, char* argv[], flags* my_flags)
 {
@@ -51,16 +61,45 @@ void flag_hunter(int argc, char* argv[], flags* my_flags)
     }
 }
 
-void select_option (flags* my_flags)
-{
-    //Logic for the routing tof my tar 
-    //Option -f is obligatory Always 
-    
 
-    //
+void select_option(flags* my_flags, char* argv[])
+{   
+    int flag_sum = my_flags->c + my_flags->x + my_flags->t + my_flags->u + my_flags->r + my_flags->f;
 
+    if (my_flags->f < 1)
+    {
+        printf("You need -f to run my_tar my_dude\n");
+        return;
+    }
+    else if (flag_sum == 2 && my_flags->c > 0)
+    {
+        printf("Run option c please\n");//option_c
+    }
+    else if(flag_sum == 2 && my_flags->x > 0)
+    {
+        printf("Run option x please\n");//option_x
+    }
+    else if(flag_sum == 2 && my_flags->t > 0)
+    {
+        printf("Run option t please\n");//option_t
+    }   
+    else if(flag_sum == 2 && my_flags->u > 0)
+    {
+        printf("Run option u please\n");//option_u
+    }
+    else if(flag_sum == 2 && my_flags->r > 0)
+    {
+        printf("Run option r please\n");//option_r
+    }   
+    else if(flag_sum == 2 && my_flags->f > 0)
+    {
+        printf("Run option f please\n");//option_f
+    }
+    else
+    {
+        printf("You are doing something extremely wrong curb your expectations");
+    } 
 }
-
 
 int main(int argc, char* argv[])
 {
@@ -70,12 +109,14 @@ int main(int argc, char* argv[])
 
     my_flags = malloc(sizeof(flags));
     my_header = malloc(sizeof(header));
-
+    
+    flag_initializer(my_flags); 
     flag_hunter(argc, argv, my_flags); 
     
-    //Select option function To be implemented
-    
-    printf("%d", my_flags->r);
+    //logic router
+    select_option(my_flags, argv);
+    free(my_header);
+    free(my_flags);
     
 
     return 0;
