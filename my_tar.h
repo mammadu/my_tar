@@ -1,11 +1,15 @@
 #ifndef MY_TAR_H
-# define MY_TAR_H
+#define MY_TAR_H
 
 // Header files dependencies.
-# include <stdio.h>
-# include <string.h>
-# include <stdlib.h>
-# include <strings.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 
 //Struct to keep track of the passed flags
 
@@ -25,8 +29,8 @@ typedef struct flag_structs
 
 typedef struct posix_header
 {                              /* byte offset */
-  char name[100];               /*   0  	name of file*/
-  char mode[8];                 /* 100 */
+  char name[100];               /*   0 */ //name of file
+  char mode[8];                 /* 100 */ //file mode
   char uid[8];                  /* 108 */
   char gid[8];                  /* 116 */
   char size[12];                /* 124 */
@@ -49,5 +53,7 @@ typedef struct posix_header
 // Source: http://www.gnu.org/software/tar/manual/html_node/Blocking.html
 # define BLOCK_SIZE	(512)
 
+int create_archive(char* archive_name);
+void check_permission(char* file_path);
 
 #endif
