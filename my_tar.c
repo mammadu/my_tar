@@ -5,11 +5,14 @@
 //     check_permission(archive_name);
 // }
 
-void check_permission(char* file_path)
+int check_permission(char* file_path)
 {
-    struct stat* statbuf;
-    int status = stat(file_path, statbuf);
-    printf("%d\n", statbuf->st_mode);
+    struct stat statbuf;
+    int status = stat(file_path, &statbuf);
+    char* item_type_and_permissions = num_to_str(statbuf.st_mode, 'o');
+    int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
+    free(item_type_and_permissions);
+    return permission;
 }
 
 void flag_initializer(flags* my_flags)
@@ -22,7 +25,7 @@ void flag_initializer(flags* my_flags)
     my_flags->f = 0;    
 }
 
-//loops troug the argv string until it finds the flags 
+//loops thru the argv string until it finds the flags 
 void flag_hunter(int argc, char* argv[], flags* my_flags)
 {
     for(int i = 0; i < argc; i += 1)
@@ -101,22 +104,23 @@ void select_option(flags* my_flags, char* argv[])
     } 
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char** argv)
 {
-    // check_permission(argv[1]);
-    flags* my_flags;
-    header* my_header;
+    int file_permission = check_permission(argv[1]);
+    printf("%s has permission %d\n", argv[1], file_permission);
+    // flags* my_flags;
+    // header* my_header;
 
-    my_flags = malloc(sizeof(flags));
-    my_header = malloc(sizeof(header));
+    // my_flags = malloc(sizeof(flags));
+    // my_header = malloc(sizeof(header));
     
-    flag_initializer(my_flags); 
-    flag_hunter(argc, argv, my_flags); 
+    // flag_initializer(my_flags); 
+    // flag_hunter(argc, argv, my_flags); 
     
-    //logic router
-    select_option(my_flags, argv);
-    free(my_header);
-    free(my_flags);
+    // //logic router
+    // select_option(my_flags, argv);
+    // free(my_header);
+    // free(my_flags);
     
 
     return 0;

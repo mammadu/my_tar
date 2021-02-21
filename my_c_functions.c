@@ -101,14 +101,15 @@ void my_putstr(char* param_1)
 
 char* reverse_string(char* param_1)
 {
-    char* return_val = my_strdup(param_1);
-    int length = my_strlen(param_1); 
+    int length = my_strlen(param_1);    
+    char* return_val = malloc(length + 1); //length is increased by 1 to allow for the null character
     for (int i = 0; i < (length / 2); i++)
     {
         char storage = param_1[i];
         return_val[i] = param_1[length - i - 1];
         return_val[length - i - 1] = storage;
     }
+    return_val[length] = '\0';
     return return_val;
 }
 
@@ -232,6 +233,7 @@ char *num_to_str(int num, char base)
             num = (num - remainder) / mod;
         }
         str[i] = num + '0';
+        i++;
     }
     else if (base == 'u')
     {
@@ -259,9 +261,9 @@ char *num_to_str(int num, char base)
         }
         str[i] = hex_to_char(num, base);
     }
-    str = reverse_string(str); //Reverses the string to provide a clean output.
-    str = realloc(str, i + 1);
-    return str;
+    char* return_val = reverse_string(str); //Reverses the string to provide a clean output.
+    free(str);
+    return return_val;
 }
 
 int my_strcmp(char* param_1, char* param_2)
