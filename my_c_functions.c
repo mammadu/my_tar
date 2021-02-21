@@ -190,7 +190,7 @@ char hex_to_char (int num, char base)
     return return_val;
 }
 
-char *num_to_str(int num, char base)
+char* num_to_str(int num, char base)
 {
     int mod; //This is used to do operations in the specific base.
     int neg = 0; //this identifies if a number is negative. 1 means the number is negative, 0 means the number is non-negative.
