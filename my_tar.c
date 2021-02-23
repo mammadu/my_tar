@@ -16,12 +16,15 @@ int check_existence(char* file_path)
 //checks the user permission of a file and returns the octal value of the permission
 int check_permission(char* file_path, char )
 {
-    struct stat statbuf;
-    int status = stat(file_path, &statbuf);
-    char* item_type_and_permissions = num_to_str(statbuf.st_mode, 'o');
-    int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
-    free(item_type_and_permissions);
-    return permission;
+    if (check_existence(file_path) == 0) 
+    {
+        struct stat statbuf;
+        int status = stat(file_path, &statbuf);
+        char* item_type_and_permissions = num_to_str(statbuf.st_mode, 'o');
+        int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
+        free(item_type_and_permissions);
+        return permission;
+    }   
 }
 /*
 
