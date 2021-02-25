@@ -23,6 +23,18 @@ typedef struct posix_header
   char prefix[155];            
 
 } header;
+
+Type Flag	File Type
+0 or null	Regular file
+1	Link to another file already archived
+2	Symbolic link
+3	Character special device
+4	Block special device
+5	Directory
+6	FIFO special file
+7	Reserved
+A-Z	Available for custom usage
+
 */
 
 void fill_name(char* file_path, header* header)
@@ -35,19 +47,26 @@ void fill_name(char* file_path, header* header)
     }    
 }
 
+// void fill_mode(stat statbuf, header* header)
+// {
+
+// }
+
+
+
 void fill_header(char* file_path, header* header)
 {
     struct stat statbuf;
     int val = stat(file_path, &statbuf);
 
     fill_name(file_path, header);
-    
+    printf("%o",statbuf.st_mode);
 }
 
 int main()
 {
     header* my_header = malloc(sizeof(header));
-    char* file_path = "a";
+    char* file_path = "abc/";
     fill_header(file_path, my_header);
 
     return 0;   
