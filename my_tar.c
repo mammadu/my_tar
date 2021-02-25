@@ -1,9 +1,41 @@
 #include "my_tar.h"
 
-// int create_archive(char* archive_name)
-// {
-//     check_permission(archive_name);
-// }
+//This is option C
+int create_archive(char* archive_name)
+{
+    int existence = check_existence(archive_name);
+    if (existence == 0)
+    {
+        permission = check_permission(archive_name);
+        if (permission == 7 || permission == 6 || permission == 3 || permission == 2)
+        {
+            make_archive(archive_name);
+        }
+        else
+        {
+            printf("can't overwrite archive");
+        }
+    }
+    else
+    {
+        make_archive(archive_name);
+    }
+}
+
+int append_item(char* item_name, header* head, int tar)
+{
+    int existence = check_existence(item_name);
+    if (existence == 0)
+    {
+        int permission = check_permission(item_name);
+        if (permission == 0)
+        {
+            struct stat statbuf;
+            int 
+        }
+    }
+    
+}
 
 //Checks for file existence. 0 means the file exists, -1 means the file doesn't exist.
 int check_existence(char* file_path)
@@ -24,7 +56,11 @@ int check_permission(char* file_path, char )
         int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
         free(item_type_and_permissions);
         return permission;
-    }   
+    }
+    else
+    {
+
+    } 
 }
 /*
 
