@@ -24,7 +24,7 @@ int check_permission(char* file_path, char )
         int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
         free(item_type_and_permissions);
         return permission;
-    }   
+    } 
 }
 /*
 

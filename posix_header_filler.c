@@ -1,6 +1,8 @@
+#include "my_tar.h"
 /*
 We are going to have all the function to fill the 
 posix_header structure in this file!
+
 typedef struct posix_header
 {                              
   char name[100];               
@@ -22,3 +24,31 @@ typedef struct posix_header
 
 } header;
 */
+
+void fill_name(char* file_path, header* header)
+{
+    int i = 0;
+    while(file_path[i])
+    {
+        header->name[i] = file_path[i];
+        i += 1;
+    }    
+}
+
+void fill_header(char* file_path, header* header)
+{
+    struct stat statbuf;
+    int val = stat(file_path, &statbuf);
+
+    fill_name(file_path, header);
+    
+}
+
+int main()
+{
+    header* my_header = malloc(sizeof(header));
+    char* file_path = "a";
+    fill_header(file_path, my_header);
+
+    return 0;   
+}

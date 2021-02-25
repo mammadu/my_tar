@@ -56,5 +56,6 @@ typedef struct posix_header
 int create_archive(char* archive_name);
 int check_permission(char* file_path);
 void flag_hunter(int argc, char* argv[], flags* my_flags);
+char* my_strcpy(char* dst, char* src);
 
 #endif

@@ -1,5 +1,19 @@
 #include "my_c_functions.h"
 
+char* my_strcpy(char* dst, char* src)
+{
+	int	i = 0;
+
+	while (src[i])
+	{
+		dst[i] = src[i];
+		i += 1;
+	}
+	dst[i] = '\0';
+	return (dst);
+}
+
+
 char* my_strdup(char* param_1)
 {
     char* str_copy;
