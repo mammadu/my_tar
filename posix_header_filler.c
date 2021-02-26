@@ -6,7 +6,10 @@ posix_header structure in this file!
 typedef struct posix_header
 {                              
   char name[100];               
-  char mode[8];                 
+  char mode[8];   
+  //Done
+
+  //UnDone  
   char uid[8];                  
   char gid[8];                  
   char size[12];               
@@ -37,6 +40,43 @@ A-Z	Available for custom usage
 
 */
 
+char* my_itoa_base(int value, int base)
+{
+	int len;
+	long nbr;
+	char* pointer;
+	char* base_string = "0123456789ABCDEF";
+
+	if (value == 0)
+		return ("0");
+	len = 0;
+	nbr = value;
+	while (nbr)
+	{
+		nbr /= base;
+		len += 1;
+	}
+	nbr = value;
+	if (nbr < 0)
+	{
+		if (base == 10)
+			len += 1;
+		nbr *= -1;
+	}
+	if (!(pointer = (char *)malloc(sizeof(char) * len + 1)))
+		return (NULL);
+	pointer[len] = '\0';
+	while (nbr)
+	{
+		pointer[--len] = base_string[nbr % base];
+		nbr /= base;
+	}
+	if (value < 0 && base == 10)
+		pointer[0] = '-';
+    
+    return (pointer);
+}
+
 void fill_name(char* file_path, header* header)
 {
     int i = 0;
@@ -47,27 +87,42 @@ void fill_name(char* file_path, header* header)
     }    
 }
 
-// void fill_mode(stat statbuf, header* header)
-// {
-
-// }
-
-
+void fill_mode(int statmode, header* header)
+{
+    char* itoa_buffer = my_itoa_base(statmode, 8);
+    int i = 1;
+    int j = 2;
+    header->mode[0] = '0';
+    header->mode[1] = '0';
+    while(itoa_buffer[i])
+    {
+        header->mode[j] = itoa_buffer[i];
+        i += 1;
+        j += 1;
+    }
+    header->mode[j] = '\0';
+   
+    free(itoa_buffer); 
+}
 
 void fill_header(char* file_path, header* header)
 {
     struct stat statbuf;
-    int val = stat(file_path, &statbuf);
+    stat(file_path, &statbuf);
 
+    //Fill structure in order of elements
     fill_name(file_path, header);
-    printf("%o",statbuf.st_mode);
+    fill_mode(statbuf.st_mode, header);
+
+    //printf("%o",statbuf.st_mode);
 }
 
 int main()
 {
     header* my_header = malloc(sizeof(header));
-    char* file_path = "abc/";
+    char* file_path = "a";
     fill_header(file_path, my_header);
-
+    printf("%s", my_header->mode);
+    free(my_header);
     return 0;   
 }
