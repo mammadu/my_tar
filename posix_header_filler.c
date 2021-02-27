@@ -9,8 +9,10 @@ typedef struct posix_header
   char mode[8];   
   //Done
 
-  //UnDone  
+  //In progress   
   char uid[8];                  
+  
+  //UnDone
   char gid[8];                  
   char size[12];               
   char mtime[12];               
@@ -105,6 +107,25 @@ void fill_mode(int statmode, header* header)
     free(itoa_buffer); 
 }
 
+void fill_uid(int statuid, header* header )
+{
+    char* itoa_buffer = my_itoa_base(statuid, 8);
+    int i = 0;
+    int j = 3;
+    header->uid[0] = '0';
+    header->uid[1] = '0';
+    header->uid[2] = '0';
+    while(itoa_buffer[i])
+    {
+        header->uid[j] = itoa_buffer[i];
+        i += 1;
+        j += 1;
+    }
+    header->uid[j] = '\0';
+    printf("%s", header->name);
+    free(itoa_buffer);
+}
+
 void fill_header(char* file_path, header* header)
 {
     struct stat statbuf;
@@ -113,16 +134,17 @@ void fill_header(char* file_path, header* header)
     //Fill structure in order of elements
     fill_name(file_path, header);
     fill_mode(statbuf.st_mode, header);
-
-    //printf("%o",statbuf.st_mode);
+    fill_uid(statbuf.st_uid, header);
+   
 }
+
 
 int main()
 {
     header* my_header = malloc(sizeof(header));
-    char* file_path = "a";
+    char* file_path = "b";
     fill_header(file_path, my_header);
-    printf("%s", my_header->mode);
+    
     free(my_header);
     return 0;   
 }
