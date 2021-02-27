@@ -1,4 +1,5 @@
 #include "my_tar.h"
+#include "my_c_functions.c"
 /*
 We are going to have all the function to fill the 
 posix_header structure in this file!
@@ -130,7 +131,7 @@ void fill_uid(int statuid,  header* header )
     free(itoa_buffer);
 }
 
-void fill_gid(int statguid,  header* header )
+void fill_gid(int statguid, header* header)
 {
     char* itoa_buffer_g = my_itoa_base(statguid, 8);
     int i = 0;
@@ -151,6 +152,45 @@ void fill_gid(int statguid,  header* header )
     free(itoa_buffer_g);
 }
 
+//Count the length of the string
+//strlen - 11 = num of 0's in a dummy string 
+//char* combine_strings(char* first_string, char* second_string)
+
+char* zero_filled_string(int len)
+{
+    int i = 0;
+    char* zeroes = malloc(sizeof(char) * (11 - len + 1));
+
+    while(i < 11 - len)
+    {
+        zeroes[i] = '0';
+        i += 1;
+    }
+    zeroes[i] ='\0';
+    return zeroes;
+}
+
+void fill_size(int statsize, header* header)
+{
+    char* statsize_buffer = my_itoa_base(statsize, 10);
+    int statsize_buffer_len = my_strlen(statsize_buffer);
+    char* zero_string = zero_filled_string(statsize_buffer_len);
+    char* zero_buffer_combination= combine_strings(zero_string, statsize_buffer);
+    int i = 0;
+
+    while(zero_buffer_combination[i] != '\0')
+    {
+        header->size[i] = zero_buffer_combination[i];
+        i += 1;
+    }
+    header->size[i] = '\0';
+    printf("%s", header->size);
+
+    free(zero_buffer_combination);
+    free(zero_string);
+    free (statsize_buffer);
+}
+
 
 void fill_header(char* file_path, header* header)
 {
@@ -160,18 +200,17 @@ void fill_header(char* file_path, header* header)
     //Fill structure in order of elements
     fill_name(file_path, header);
     fill_mode(statbuf.st_mode, header);
+    fill_uid(statbuf.st_uid, header); // this and below function are Twin functions 
+    fill_gid(statbuf.st_gid , header); //did not abstract due to possibly Unknown untested cases
+    fill_size(statbuf.st_size , header);
     
-    //Twin functions did not abstract due to possibly Unknown untested cases  
-    fill_uid(statbuf.st_uid, header);
-    fill_gid(statbuf.st_gid , header);
-   
 }
 
 
 int main()
 {
     header* my_header = malloc(sizeof(header));
-    char* file_path = "b";
+    char* file_path = "a";
     fill_header(file_path, my_header);
     
     free(my_header);
