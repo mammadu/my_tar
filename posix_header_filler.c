@@ -4,17 +4,18 @@ We are going to have all the function to fill the
 posix_header structure in this file!
 
 typedef struct posix_header
-{                              
+{ 
+  //Done                             
   char name[100];               
   char mode[8];   
-  //Done
+  char uid[8];
+  char gid[8];
 
   //In progress   
-  char uid[8];                  
-  
-  //UnDone
-  char gid[8];                  
-  char size[12];               
+  char size[12];                  
+
+  //UnDone                    
+                 
   char mtime[12];               
   char chksum[8];               
   char typeflag;                
@@ -108,14 +109,16 @@ void fill_mode(int statmode, header* header)
     free(itoa_buffer); 
 }
 
-void fill_uid(int statuid, header* header )
+void fill_uid(int statuid,  header* header )
 {
     char* itoa_buffer = my_itoa_base(statuid, 8);
     int i = 0;
     int j = 3;
+    
     header->uid[0] = '0';
     header->uid[1] = '0';
     header->uid[2] = '0';
+    
     while(itoa_buffer[i])
     {
         header->uid[j] = itoa_buffer[i];
@@ -123,9 +126,31 @@ void fill_uid(int statuid, header* header )
         j += 1;
     }
     header->uid[j] = '\0';
-    printf("%s", header->name);
+
     free(itoa_buffer);
 }
+
+void fill_gid(int statguid,  header* header )
+{
+    char* itoa_buffer_g = my_itoa_base(statguid, 8);
+    int i = 0;
+    int j = 3;
+    
+    header->gid[0] = '0';
+    header->gid[1] = '0';
+    header->gid[2] = '0';
+
+    while(itoa_buffer_g[i])
+    {
+        header->gid[j] = itoa_buffer_g[i];
+        i += 1;
+        j += 1;
+    }
+    header->gid[j] = '\0';
+
+    free(itoa_buffer_g);
+}
+
 
 void fill_header(char* file_path, header* header)
 {
@@ -135,7 +160,10 @@ void fill_header(char* file_path, header* header)
     //Fill structure in order of elements
     fill_name(file_path, header);
     fill_mode(statbuf.st_mode, header);
+    
+    //Twin functions did not abstract due to possibly Unknown untested cases  
     fill_uid(statbuf.st_uid, header);
+    fill_gid(statbuf.st_gid , header);
    
 }
 
