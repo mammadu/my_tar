@@ -86,7 +86,8 @@ void fill_name(char* file_path, header* header)
     {
         header->name[i] = file_path[i];
         i += 1;
-    }    
+    }
+    header->name[i] = '\0';    
 }
 
 void fill_mode(int statmode, header* header)
