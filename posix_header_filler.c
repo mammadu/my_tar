@@ -13,7 +13,7 @@ typedef struct posix_header
   char gid[8];
 
   //In progress   
-  char size[12];                  
+  char size[12];              
 
   //UnDone                    
                  
@@ -172,7 +172,7 @@ char* zero_filled_string(int len)
 
 void fill_size(int statsize, header* header)
 {
-    char* statsize_buffer = my_itoa_base(statsize, 10);
+    char* statsize_buffer = my_itoa_base(statsize, 8);
     int statsize_buffer_len = my_strlen(statsize_buffer);
     char* zero_string = zero_filled_string(statsize_buffer_len);
     char* zero_buffer_combination= combine_strings(zero_string, statsize_buffer);
@@ -184,11 +184,24 @@ void fill_size(int statsize, header* header)
         i += 1;
     }
     header->size[i] = '\0';
-    printf("%s", header->size);
+    // printf("%s", header->size);
 
     free(zero_buffer_combination);
     free(zero_string);
     free (statsize_buffer);
+}
+
+void fill_mtime(int mtime, header* header)
+{
+    char* octal_time = my_itoa_base(mtime, 8);
+    int i = 0;
+    while(octal_time[i] != '\0')
+    {
+        header->mtime[i] = octal_time[i];
+        i++;
+    }
+    header->mtime[i] = '\0';
+    free(octal_time);
 }
 
 
@@ -203,16 +216,21 @@ void fill_header(char* file_path, header* header)
     fill_uid(statbuf.st_uid, header); // this and below function are Twin functions 
     fill_gid(statbuf.st_gid , header); //did not abstract due to possibly Unknown untested cases
     fill_size(statbuf.st_size , header);
-    
+    fill_mtime(statbuf.st_mtim.tv_sec, header);    
 }
 
 
 int main()
 {
     header* my_header = malloc(sizeof(header));
-    char* file_path = "a";
+    char* file_path = "file1";
     fill_header(file_path, my_header);
-    
+    int fd = open("fuck.tar", O_RDWR, O_CREAT);
+    int bytes_written = write(fd, my_header, sizeof(header));
+    printf("number of bytes written is = %d\n", bytes_written);
+    printf("errno = %d\n", errno);
+    close(fd);
+
     free(my_header);
     return 0;   
 }
