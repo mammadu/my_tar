@@ -11,15 +11,16 @@ typedef struct posix_header
   char mode[8];   
   char uid[8];
   char gid[8];
+  char size[12];
 
-  //In progress   
-  char size[12];              
+  char mtime[12];
+
+  //In progress
+  char chksum[8];               
+  char typeflag;                  
 
   //UnDone                    
-                 
-  char mtime[12];               
-  char chksum[8];               
-  char typeflag;                
+
   char linkname[100];           
   char magic[6];                
   char version[2];              
