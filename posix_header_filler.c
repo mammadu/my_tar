@@ -304,6 +304,16 @@ void fill_chksum(header* header)
     free(zero_buffer_combination);
 }
 
+void fill_devmajor(unsigned int device_id, header* header)
+{
+    int major_id = major(device_id);
+    char* str = my_itoa_base(major_id, 8);
+    for (int i = 0; i < my_strlen(str); i++)
+    {
+        header->devmajor[i] = str[i];
+    }
+    // free(str);
+}
 
 
 void fill_header(char* file_path, header* header)
@@ -321,6 +331,8 @@ void fill_header(char* file_path, header* header)
     fill_typeflag(statbuf.st_mode, header);
     fill_magic(header);
     fill_version(header);   
+    fill_devmajor(statbuf.st_rdev, header);
+
     fill_chksum(header);
 }
 
