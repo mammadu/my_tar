@@ -203,6 +203,7 @@ char hex_to_char (int num, char base)
     return return_val;
 }
 
+//num_to_str and my_itoa_base do the same thing but with different implementations. my_itoa_base is arguably better and may end up replacing num_to_str
 char* num_to_str(int num, char base)
 {
     int mod; //This is used to do operations in the specific base.
@@ -277,6 +278,43 @@ char* num_to_str(int num, char base)
     char* return_val = reverse_string(str); //Reverses the string to provide a clean output.
     free(str);
     return return_val;
+}
+
+char* my_itoa_base(int value, int base)
+{
+	int len;
+	long nbr;
+	char* pointer;
+	char* base_string = "0123456789ABCDEF";
+
+	if (value == 0)
+		return ("0");
+	len = 0;
+	nbr = value;
+	while (nbr) //this loop sets the length of the string
+	{
+		nbr /= base;
+		len += 1;
+	}
+	nbr = value;
+	if (nbr < 0) //this increases the length of the string to add the '-' character
+	{
+		if (base == 10)
+			len += 1;
+		nbr *= -1;
+	}
+	if (!(pointer = (char *)malloc(sizeof(char) * len + 1)))
+		return (NULL);
+	pointer[len] = '\0'; //sets the last character to NULL
+	while (nbr) //This loop fills the character string from the end to the beginning.
+	{
+		pointer[--len] = base_string[nbr % base];
+		nbr /= base;
+	}
+	if (value < 0 && base == 10) //Sets the first character to '-' if the value is negative
+		pointer[0] = '-';
+    
+    return (pointer);
 }
 
 int my_strcmp(char* param_1, char* param_2)

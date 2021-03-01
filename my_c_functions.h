@@ -22,6 +22,8 @@ char hex_to_char (int num, char base);
 
 char *num_to_str(int num, char base);
 
+char* my_itoa_base(int value, int base);
+
 int my_strcmp(char* param_1, char* param_2);
 
 #endif

@@ -56,6 +56,7 @@ typedef struct posix_header
 # define BLOCK_SIZE	(512)
 
 int create_archive(char* archive_name);
+int check_existence(char* file_path);
 int check_permission(char* file_path);
 void flag_hunter(int argc, char* argv[], flags* my_flags);
 char* my_strcpy(char* dst, char* src);

@@ -11,4 +11,4 @@ main: my_tar.o my_c_functions.o
 	${CC} -c $<
 
 clean:
-	rm *.o core.main.*
+	rm *.o core.*

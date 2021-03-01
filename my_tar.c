@@ -6,36 +6,25 @@ int create_archive(char* archive_name)
     int existence = check_existence(archive_name);
     if (existence == 0)
     {
-        permission = check_permission(archive_name);
+        int permission = check_permission(archive_name);
         if (permission == 7 || permission == 6 || permission == 3 || permission == 2)
         {
-            make_archive(archive_name);
+            //make_archive(archive_name);
+            printf("make archive\n");
         }
         else
         {
-            printf("can't overwrite archive");
+            printf("can't overwrite archive\n");
         }
     }
     else
     {
-        make_archive(archive_name);
+        //make_archive(archive_name);
+        printf("make archive\n");
     }
 }
 
-int append_item(char* item_name, header* head, int tar)
-{
-    int existence = check_existence(item_name);
-    if (existence == 0)
-    {
-        int permission = check_permission(item_name);
-        if (permission == 0)
-        {
-            struct stat statbuf;
-            int 
-        }
-    }
-    
-}
+
 
 //Checks for file existence. 0 means the file exists, -1 means the file doesn't exist.
 int check_existence(char* file_path)
@@ -46,21 +35,14 @@ int check_existence(char* file_path)
 }
 
 //checks the user permission of a file and returns the octal value of the permission
-int check_permission(char* file_path, char )
+int check_permission(char* file_path)
 {
-    if (check_existence(file_path) == 0) 
-    {
-        struct stat statbuf;
-        int status = stat(file_path, &statbuf);
-        char* item_type_and_permissions = num_to_str(statbuf.st_mode, 'o');
-        int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
-        free(item_type_and_permissions);
-        return permission;
-    }
-    else
-    {
-
-    } 
+    struct stat statbuf;
+    int status = stat(file_path, &statbuf);
+    char* item_type_and_permissions = my_itoa_base(statbuf.st_mode, 8);
+    int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
+    free(item_type_and_permissions);
+    return permission;
 }
 /*
 
@@ -166,23 +148,35 @@ void select_option(flags* my_flags, char* argv[])
     } 
 }
 
+//use this main for testing
+// int main(int argc, char** argv)
+// {
+//     int existence = check_existence(argv[1]);
+//     printf("%s has existence %d\n", argv[1], existence);
+//     // flags* my_flags;
+//     // header* my_header;
+
+//     // my_flags = malloc(sizeof(flags));
+//     // my_header = malloc(sizeof(header));
+    
+//     // flag_initializer(my_flags); 
+//     // flag_hunter(argc, argv, my_flags); 
+    
+//     // //logic router
+//     // select_option(my_flags, argv);
+//     // free(my_header);
+//     // free(my_flags);
+    
+//     return 0;
+// }
+
+//actual main
 int main(int argc, char** argv)
 {
-    int existence = check_existence(argv[1]);
-    printf("%s has existence %d\n", argv[1], existence);
-    // flags* my_flags;
-    // header* my_header;
-
-    // my_flags = malloc(sizeof(flags));
-    // my_header = malloc(sizeof(header));
-    
-    // flag_initializer(my_flags); 
-    // flag_hunter(argc, argv, my_flags); 
-    
-    // //logic router
-    // select_option(my_flags, argv);
-    // free(my_header);
-    // free(my_flags);
-    
+    flags flag;
+    flag_initializer(&flag);
+    flag_hunter(argc, argv, &flag);
+    select_option(&flag, argv);
+        
     return 0;
 }
