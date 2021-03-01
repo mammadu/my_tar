@@ -15,14 +15,15 @@ typedef struct posix_header
 
   char mtime[12];
 
+  char typeflag;
+  char magic[6];
+
   //In progress
   char chksum[8];               
-  char typeflag;                  
 
   //UnDone                    
 
   char linkname[100];           
-  char magic[6];                
   char version[2];              
   char uname[32];               
   char gname[32];               
@@ -44,43 +45,6 @@ Type Flag	File Type
 A-Z	Available for custom usage
 
 */
-
-char* my_itoa_base(int value, int base)
-{
-	int len;
-	long nbr;
-	char* pointer;
-	char* base_string = "0123456789ABCDEF";
-
-	if (value == 0)
-		return ("0");
-	len = 0;
-	nbr = value;
-	while (nbr)
-	{
-		nbr /= base;
-		len += 1;
-	}
-	nbr = value;
-	if (nbr < 0)
-	{
-		if (base == 10)
-			len += 1;
-		nbr *= -1;
-	}
-	if (!(pointer = (char *)malloc(sizeof(char) * len + 1)))
-		return (NULL);
-	pointer[len] = '\0';
-	while (nbr)
-	{
-		pointer[--len] = base_string[nbr % base];
-		nbr /= base;
-	}
-	if (value < 0 && base == 10)
-		pointer[0] = '-';
-    
-    return (pointer);
-}
 
 void fill_name(char* file_path, header* header)
 {
@@ -205,6 +169,59 @@ void fill_mtime(int mtime, header* header)
     free(octal_time);
 }
 
+/*Haven't figured out what to do about the following:
+ Links to already archived files
+ Reserved files
+ */
+void fill_typeflag(int mode, header* header)
+{
+    if (S_ISREG(mode))
+    {
+        header->typeflag = '0';
+    }
+    else if (S_ISLNK(mode))
+    {
+        header->typeflag = '2';
+    }
+    else if (S_ISCHR(mode))
+    {
+        header->typeflag = '3';
+    }
+    else if (S_ISBLK(mode))
+    {
+        header->typeflag = '4';
+    }
+    else if (S_ISDIR(mode))
+    {
+        header->typeflag = '5';
+    }
+    else if (S_ISFIFO(mode))
+    {
+        header->typeflag = '6';
+    }
+    else
+    {
+        header->typeflag = '7';
+    }
+}
+
+void fill_magic(header* header)
+{
+    char* str = "ustar";
+    int i = 0;
+    while (str[i] != '\0')
+    {
+        header->magic[i] = str[i];
+        i++;
+    }
+    header->magic[i] = '\0';
+}
+
+void fill_version(header* header)
+{
+
+}
+
 
 void fill_header(char* file_path, header* header)
 {
@@ -218,20 +235,26 @@ void fill_header(char* file_path, header* header)
     fill_gid(statbuf.st_gid , header); //did not abstract due to possibly Unknown untested cases
     fill_size(statbuf.st_size , header);
     fill_mtime(statbuf.st_mtim.tv_sec, header);    
+    fill_typeflag(statbuf.st_mode, header);
+    fill_magic(header);
 }
 
 
 int main()
 {
     header* my_header = malloc(sizeof(header));
-    char* file_path = "file1";
+    printf("enter name of file or directory\n");
+    char* file_path = malloc(100);
+    scanf("%s", file_path);
     fill_header(file_path, my_header);
-    int fd = open("fuck.tar", O_RDWR, O_CREAT);
+    int fd = open("test.tar", O_RDWR, O_CREAT, S_IRWXU);
+    printf("fd = %d\n", fd);
     int bytes_written = write(fd, my_header, sizeof(header));
     printf("number of bytes written is = %d\n", bytes_written);
     printf("errno = %d\n", errno);
     close(fd);
 
+    free(file_path);
     free(my_header);
     return 0;   
 }
