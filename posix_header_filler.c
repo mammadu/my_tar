@@ -17,6 +17,7 @@ typedef struct posix_header
 
   char typeflag;
   char magic[6];
+  char version[2];
 
   //In progress
   char chksum[8];               
@@ -24,7 +25,7 @@ typedef struct posix_header
   //UnDone                    
 
   char linkname[100];           
-  char version[2];              
+                
   char uname[32];               
   char gname[32];               
   char devmajor[8];             
@@ -121,12 +122,12 @@ void fill_gid(int statguid, header* header)
 //strlen - 11 = num of 0's in a dummy string 
 //char* combine_strings(char* first_string, char* second_string)
 
-char* zero_filled_string(int len)
+char* zero_filled_string(int len, int field_size) //field size is 1 less than the length of the character array to account for the NULL character
 {
     int i = 0;
-    char* zeroes = malloc(sizeof(char) * (11 - len + 1));
+    char* zeroes = malloc(sizeof(char) * (field_size - len + 1));
 
-    while(i < 11 - len)
+    while(i < field_size - len)
     {
         zeroes[i] = '0';
         i += 1;
@@ -139,7 +140,7 @@ void fill_size(int statsize, header* header)
 {
     char* statsize_buffer = my_itoa_base(statsize, 8);
     int statsize_buffer_len = my_strlen(statsize_buffer);
-    char* zero_string = zero_filled_string(statsize_buffer_len);
+    char* zero_string = zero_filled_string(statsize_buffer_len, 11);
     char* zero_buffer_combination= combine_strings(zero_string, statsize_buffer);
     int i = 0;
 
@@ -226,8 +227,83 @@ void fill_version(header* header)
         header->version[i] = str[i];
         i++;
     }
-    header->magic[i] = '\0';
+    header->version[i] = '\0';
 }
+
+void fill_chksum(header* header)
+{
+    
+    int sum = 0;
+    for (int i = 0; i < my_strlen(header->name); i++)
+    {
+        sum += header->name[i];
+    }
+    for (int i = 0; i < my_strlen(header->mode); i++)
+    {
+        sum += header->mode[i];
+    }
+    for (int i = 0; i < my_strlen(header->uid); i++)
+    {
+        sum += header->uid[i];
+    }
+    for (int i = 0; i < my_strlen(header->gid); i++)
+    {
+        sum += header->gid[i];
+    }
+    for (int i = 0; i < my_strlen(header->size); i++)
+    {
+        sum += header->size[i];
+    }
+    for (int i = 0; i < my_strlen(header->mtime); i++)
+    {
+        sum += header->mtime[i];
+    }
+    sum += header->typeflag;
+    for (int i = 0; i < my_strlen(header->linkname); i++)
+    {
+        sum += header->linkname[i];
+    }
+    for (int i = 0; i < my_strlen(header->magic); i++)
+    {
+        sum += header->magic[i];
+    }
+    for (int i = 0; i < my_strlen(header->version); i++)
+    {
+        sum += header->version[i];
+    }
+    // for (int i = 0; i < my_strlen(header->uname); i++)
+    // {
+    //     sum += header->uname[i];
+    // }
+    // for (int i = 0; i < my_strlen(header->gname); i++)
+    // {
+    //     sum += header->gname[i];
+    // }
+    // for (int i = 0; i < my_strlen(header->devmajor); i++)
+    // {
+    //     sum += header->devmajor[i];
+    // }
+    // for (int i = 0; i < my_strlen(header->devminor); i++)
+    // {
+    //     sum += header->devminor[i];
+    // }
+    // for (int i = 0; i < my_strlen(header->prefix); i++)
+    // {
+    //     sum += header->prefix[i];
+    // }
+    char* chksum = my_itoa_base(sum, 8);
+    int len = my_strlen(chksum);
+    char* zero_string = zero_filled_string(len, 7);
+    char* zero_buffer_combination= combine_strings(zero_string, chksum);    
+    for (int i = 0; i < my_strlen(zero_buffer_combination); i++)
+    {
+        header->chksum[i] = zero_buffer_combination[i];
+    }
+    free(chksum);
+    free(zero_string);
+    free(zero_buffer_combination);
+}
+
 
 
 void fill_header(char* file_path, header* header)
@@ -244,7 +320,8 @@ void fill_header(char* file_path, header* header)
     fill_mtime(statbuf.st_mtim.tv_sec, header);    
     fill_typeflag(statbuf.st_mode, header);
     fill_magic(header);
-    fill_version(header);
+    fill_version(header);   
+    fill_chksum(header);
 }
 
 
