@@ -344,7 +344,7 @@ int main()
     char* file_path = malloc(100);
     scanf("%s", file_path);
     fill_header(file_path, my_header);
-    int fd = open("test.tar", O_RDWR, O_CREAT, S_IRWXU);
+    int fd = open("test.tar", O_RDWR | O_CREAT, S_IRWXU);
     printf("fd = %d\n", fd);
     int bytes_written = write(fd, my_header, sizeof(header));
     printf("number of bytes written is = %d\n", bytes_written);
