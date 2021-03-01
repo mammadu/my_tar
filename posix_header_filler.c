@@ -214,12 +214,19 @@ void fill_magic(header* header)
         header->magic[i] = str[i];
         i++;
     }
-    header->magic[i] = '\0';
+    header->magic[i] = ' ';
 }
 
 void fill_version(header* header)
 {
-
+    char* str = " ";
+    int i = 0;
+    while (str[i] != '\0')
+    {
+        header->version[i] = str[i];
+        i++;
+    }
+    header->magic[i] = '\0';
 }
 
 
@@ -237,6 +244,7 @@ void fill_header(char* file_path, header* header)
     fill_mtime(statbuf.st_mtim.tv_sec, header);    
     fill_typeflag(statbuf.st_mode, header);
     fill_magic(header);
+    fill_version(header);
 }
 
 

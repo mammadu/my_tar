@@ -7,6 +7,9 @@ all: main
 main: my_tar.o my_c_functions.o
 	${CC} -o $@ $^ ${CFLAGS_MEM}
 
+header: posix_header_filler.c
+	${CC} -o $@ $^ ${CFLAGS_MEM}
+
 %.o: %.c %.h
 	${CC} -c $<
 
