@@ -13,7 +13,7 @@ typedef struct posix_header
   char gid[8];
   char size[12];
   char mtime[12];
-  char typeflag;
+  
   char magic[6];
   char version[2];
   char uname[32];               
@@ -23,10 +23,12 @@ typedef struct posix_header
     
 
   //In progress
-  char chksum[8];               
+  char chksum[8];  
+  char typeflag;             
                 
-           
-  char prefix[155];            
+  //Undone         
+  char prefix[155];
+  char linkname[100];            
 
 } header;
 
@@ -222,10 +224,6 @@ void fill_chksum(header* header)
     {
         sum += header->devminor[i];
     }
-    // for (int i = 0; i < my_strlen(header->prefix); i++)
-    // {
-    //     sum += header->prefix[i];
-    // }
     char* chksum = my_itoa_base(sum, 8);
     int len = my_strlen(chksum);
     char* zero_string = zero_filled_string(len, 7);
