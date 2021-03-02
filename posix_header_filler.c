@@ -18,6 +18,9 @@ typedef struct posix_header
   char typeflag;
   char magic[6];
   char version[2];
+  
+  char devmajor[8];             
+  char devminor[8];    
 
   //In progress
   char chksum[8];               
@@ -28,8 +31,7 @@ typedef struct posix_header
                 
   char uname[32];               
   char gname[32];               
-  char devmajor[8];             
-  char devminor[8];             
+           
   char prefix[155];            
 
 } header;
@@ -172,7 +174,6 @@ void fill_mtime(int mtime, header* header)
 
 void fill_chksum(header* header)
 {
-    
     int sum = 0;
     for (int i = 0; i < my_strlen(header->name); i++)
     {
@@ -219,14 +220,14 @@ void fill_chksum(header* header)
     // {
     //     sum += header->gname[i];
     // }
-    // for (int i = 0; i < my_strlen(header->devmajor); i++)
-    // {
-    //     sum += header->devmajor[i];
-    // }
-    // for (int i = 0; i < my_strlen(header->devminor); i++)
-    // {
-    //     sum += header->devminor[i];
-    // }
+    for (int i = 0; i < my_strlen(header->devmajor); i++)
+    {
+        sum += header->devmajor[i];
+    }
+    for (int i = 0; i < my_strlen(header->devminor); i++)
+    {
+        sum += header->devminor[i];
+    }
     // for (int i = 0; i < my_strlen(header->prefix); i++)
     // {
     //     sum += header->prefix[i];
@@ -311,10 +312,13 @@ void fill_devmajor(int device_id, header* header)
     int len = my_strlen(major_id_str);
     char* zero_string = zero_filled_string(len, 7);
     char* zero_buffer_combination = combine_strings(zero_string, major_id_str);
-    for (int i = 0; i < my_strlen(zero_buffer_combination); i++)
+    int i = 0;
+    while(zero_buffer_combination[i] != '\0')
     {
         header->devmajor[i] = zero_buffer_combination[i];
+        i++;
     }
+    header->devmajor[i] = '\0';
     // free(major_id_str);
     free(zero_string);
     free(zero_buffer_combination);
@@ -327,10 +331,13 @@ void fill_devminor(int device_id, header* header)
     int len = my_strlen(minor_id_str);
     char* zero_string = zero_filled_string(len, 7);
     char* zero_buffer_combination = combine_strings(zero_string, minor_id_str);
-    for (int i = 0; i < my_strlen(zero_buffer_combination); i++)
+    int i = 0;
+    while(zero_buffer_combination[i] != '\0')
     {
         header->devminor[i] = zero_buffer_combination[i];
+        i++;
     }
+    header->devminor[i] = '\0';
     // free(minor_id_str);
     free(zero_string);
     free(zero_buffer_combination);
