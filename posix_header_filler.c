@@ -12,22 +12,19 @@ typedef struct posix_header
   char uid[8];
   char gid[8];
   char size[12];
-
   char mtime[12];
-
   char typeflag;
   char magic[6];
   char version[2];
 
   //In progress
   char chksum[8];               
-
-  //UnDone                    
-
-  char linkname[100];           
-                
   char uname[32];               
-  char gname[32];               
+  char gname[32];
+  
+  
+  //UnDone                    
+  char linkname[100];              
   char devmajor[8];             
   char devminor[8];             
   char prefix[155];            
@@ -315,6 +312,38 @@ void fill_devmajor(unsigned int device_id, header* header)
     // free(str);
 }
 
+void fill_uname(int statbuf, header* header)
+{
+    struct passwd *pwd;
+    pwd = getpwuid(statbuf);
+    int i = 0;
+    if(pwd != NULL)
+    {
+        while(pwd->pw_name[i] != '\0')
+        {
+            header->uname[i] = pwd->pw_name[i];
+             i+= 1;
+        }
+        header->uname[i] = '\0';
+    }
+}
+
+void fill_gname(int statbuf, header* header)
+{
+    struct group *grp;
+    grp = getgrgid(statbuf);
+    int i = 0;
+
+    if(grp != NULL)
+    {
+        while(grp->gr_name[i] != '\0')
+        {
+            header->gname[i] = grp->gr_name[i];
+            i+= 1;
+        }
+        header->gname[i] = '\0';
+    }
+}
 
 void fill_header(char* file_path, header* header)
 {
@@ -332,8 +361,10 @@ void fill_header(char* file_path, header* header)
     fill_magic(header);
     fill_version(header);   
     fill_devmajor(statbuf.st_rdev, header);
+    fill_uname(statbuf.st_uid, header);               
+    fill_gname(statbuf.st_uid, header);
 
-    fill_chksum(header);
+    fill_chksum(header); //It needs to be the last filler function to be called 
 }
 
 
