@@ -170,66 +170,6 @@ void fill_mtime(int mtime, header* header)
     free(octal_time);
 }
 
-/*Haven't figured out what to do about the following:
- Links to already archived files
- Reserved files
- */
-void fill_typeflag(int mode, header* header)
-{
-    if (S_ISREG(mode))
-    {
-        header->typeflag = '0';
-    }
-    else if (S_ISLNK(mode))
-    {
-        header->typeflag = '2';
-    }
-    else if (S_ISCHR(mode))
-    {
-        header->typeflag = '3';
-    }
-    else if (S_ISBLK(mode))
-    {
-        header->typeflag = '4';
-    }
-    else if (S_ISDIR(mode))
-    {
-        header->typeflag = '5';
-    }
-    else if (S_ISFIFO(mode))
-    {
-        header->typeflag = '6';
-    }
-    else
-    {
-        header->typeflag = '7';
-    }
-}
-
-void fill_magic(header* header)
-{
-    char* str = "ustar";
-    int i = 0;
-    while (str[i] != '\0')
-    {
-        header->magic[i] = str[i];
-        i++;
-    }
-    header->magic[i] = ' ';
-}
-
-void fill_version(header* header)
-{
-    char* str = " ";
-    int i = 0;
-    while (str[i] != '\0')
-    {
-        header->version[i] = str[i];
-        i++;
-    }
-    header->version[i] = '\0';
-}
-
 void fill_chksum(header* header)
 {
     
@@ -304,17 +244,98 @@ void fill_chksum(header* header)
     free(zero_buffer_combination);
 }
 
-void fill_devmajor(unsigned int device_id, header* header)
+/*Haven't figured out what to do about the following:
+ Links to already archived files
+ Reserved files
+ */
+void fill_typeflag(int mode, header* header)
 {
-    int major_id = major(device_id);
-    char* str = my_itoa_base(major_id, 8);
-    for (int i = 0; i < my_strlen(str); i++)
+    if (S_ISREG(mode))
     {
-        header->devmajor[i] = str[i];
+        header->typeflag = '0';
     }
-    // free(str);
+    else if (S_ISLNK(mode))
+    {
+        header->typeflag = '2';
+    }
+    else if (S_ISCHR(mode))
+    {
+        header->typeflag = '3';
+    }
+    else if (S_ISBLK(mode))
+    {
+        header->typeflag = '4';
+    }
+    else if (S_ISDIR(mode))
+    {
+        header->typeflag = '5';
+    }
+    else if (S_ISFIFO(mode))
+    {
+        header->typeflag = '6';
+    }
+    else
+    {
+        header->typeflag = '7';
+    }
 }
 
+void fill_magic(header* header)
+{
+    char* str = "ustar";
+    int i = 0;
+    while (str[i] != '\0')
+    {
+        header->magic[i] = str[i];
+        i++;
+    }
+    header->magic[i] = ' ';
+}
+
+void fill_version(header* header)
+{
+    char* str = " ";
+    int i = 0;
+    while (str[i] != '\0')
+    {
+        header->version[i] = str[i];
+        i++;
+    }
+    header->version[i] = '\0';
+}
+
+void fill_devmajor(int device_id, header* header)
+{
+    int major_id = major(device_id);
+    char* major_id_str = my_itoa_base(major_id, 8);
+    int len = my_strlen(major_id_str);
+    char* zero_string = zero_filled_string(len, 7);
+    char* zero_buffer_combination = combine_strings(zero_string, major_id_str);
+    for (int i = 0; i < my_strlen(zero_buffer_combination); i++)
+    {
+        header->devmajor[i] = zero_buffer_combination[i];
+    }
+    // free(major_id_str);
+    free(zero_string);
+    free(zero_buffer_combination);
+}
+
+void fill_devminor(int device_id, header* header)
+{
+    int minor_id = major(device_id);
+    char* minor_id_str = my_itoa_base(minor_id, 8);
+    int len = my_strlen(minor_id_str);
+    char* zero_string = zero_filled_string(len, 7);
+    char* zero_buffer_combination = combine_strings(zero_string, minor_id_str);
+    for (int i = 0; i < my_strlen(zero_buffer_combination); i++)
+    {
+        header->devminor[i] = zero_buffer_combination[i];
+    }
+    // free(minor_id_str);
+    free(zero_string);
+    free(zero_buffer_combination);
+    // printf("devmajor is = %s\n", header->devmajor);
+}
 
 void fill_header(char* file_path, header* header)
 {
@@ -332,6 +353,7 @@ void fill_header(char* file_path, header* header)
     fill_magic(header);
     fill_version(header);   
     fill_devmajor(statbuf.st_rdev, header);
+    fill_devminor(statbuf.st_rdev, header);
 
     fill_chksum(header);
 }
