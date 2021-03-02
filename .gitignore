@@ -1,10 +1,15 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+!Makefile
 *.o 
 *.out
-a
-b
-c
-file1
-file2
-archive
 *.tar
-main
+
+
