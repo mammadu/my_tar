@@ -14,4 +14,9 @@ header: posix_header_filler.c
 	${CC} -c $<
 
 clean:
-	rm *.o core.*
+	rm *.o core.* *.tar
+
+fclean: main header
+	rm $^
+
+cleanall: fclean clean

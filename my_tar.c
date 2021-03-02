@@ -173,9 +173,9 @@ void select_option(flags* my_flags, char* argv[])
 int main(int argc, char** argv)
 {
     flags flag;
-    flag_initializer(flag);
-    flag_hunter(argc, argv, flag);
-    select_option(flag, argv);
+    flag_initializer(&flag);
+    flag_hunter(argc, argv, &flag);
+    select_option(&flag, argv);
         
     return 0;
 }

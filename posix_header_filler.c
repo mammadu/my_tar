@@ -12,25 +12,19 @@ typedef struct posix_header
   char uid[8];
   char gid[8];
   char size[12];
-
   char mtime[12];
-
   char typeflag;
   char magic[6];
   char version[2];
-  
+  char uname[32];               
+  char gname[32];
   char devmajor[8];             
-  char devminor[8];    
+  char devminor[8];   
+    
 
   //In progress
   char chksum[8];               
-
-  //UnDone                    
-
-  char linkname[100];           
                 
-  char uname[32];               
-  char gname[32];               
            
   char prefix[155];            
 
@@ -212,14 +206,14 @@ void fill_chksum(header* header)
     {
         sum += header->version[i];
     }
-    // for (int i = 0; i < my_strlen(header->uname); i++)
-    // {
-    //     sum += header->uname[i];
-    // }
-    // for (int i = 0; i < my_strlen(header->gname); i++)
-    // {
-    //     sum += header->gname[i];
-    // }
+    for (int i = 0; i < my_strlen(header->uname); i++)
+    {
+        sum += header->uname[i];
+    }
+    for (int i = 0; i < my_strlen(header->gname); i++)
+    {
+        sum += header->gname[i];
+    }
     for (int i = 0; i < my_strlen(header->devmajor); i++)
     {
         sum += header->devmajor[i];
@@ -326,7 +320,7 @@ void fill_devmajor(int device_id, header* header)
 
 void fill_devminor(int device_id, header* header)
 {
-    int minor_id = major(device_id);
+    int minor_id = minor(device_id);
     char* minor_id_str = my_itoa_base(minor_id, 8);
     int len = my_strlen(minor_id_str);
     char* zero_string = zero_filled_string(len, 7);
@@ -344,6 +338,39 @@ void fill_devminor(int device_id, header* header)
     // printf("devmajor is = %s\n", header->devmajor);
 }
 
+void fill_uname(int statbuf, header* header)
+{
+    struct passwd *pwd;
+    pwd = getpwuid(statbuf);
+    int i = 0;
+    if(pwd != NULL)
+    {
+        while(pwd->pw_name[i] != '\0')
+        {
+            header->uname[i] = pwd->pw_name[i];
+             i+= 1;
+        }
+        header->uname[i] = '\0';
+    }
+}
+
+void fill_gname(int statbuf, header* header)
+{
+    struct group *grp;
+    grp = getgrgid(statbuf);
+    int i = 0;
+
+    if(grp != NULL)
+    {
+        while(grp->gr_name[i] != '\0')
+        {
+            header->gname[i] = grp->gr_name[i];
+            i+= 1;
+        }
+        header->gname[i] = '\0';
+    }
+}
+
 void fill_header(char* file_path, header* header)
 {
     struct stat statbuf;
@@ -358,11 +385,13 @@ void fill_header(char* file_path, header* header)
     fill_mtime(statbuf.st_mtim.tv_sec, header);    
     fill_typeflag(statbuf.st_mode, header);
     fill_magic(header);
-    fill_version(header);   
+    fill_version(header);       
+    fill_uname(statbuf.st_uid, header);               
+    fill_gname(statbuf.st_uid, header);
     fill_devmajor(statbuf.st_rdev, header);
     fill_devminor(statbuf.st_rdev, header);
 
-    fill_chksum(header);
+    fill_chksum(header); //It needs to be the last filler function to be called 
 }
 
 

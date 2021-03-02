@@ -10,4 +10,10 @@
 !Makefile
 *.o 
 *.out
+<<<<<<< HEAD
 *.tar
+=======
+*.tar
+tar
+
+>>>>>>> fill uname and gname implemented
