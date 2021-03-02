@@ -16,20 +16,16 @@ typedef struct posix_header
   char typeflag;
   char magic[6];
   char version[2];
-  
+  char uname[32];               
+  char gname[32];
   char devmajor[8];             
-  char devminor[8];    
+  char devminor[8];   
+    
 
   //In progress
   char chksum[8];               
-  char uname[32];               
-  char gname[32];
-  
-  
-  //UnDone                    
-  char linkname[100];              
-  char devmajor[8];             
-  char devminor[8];             
+                
+           
   char prefix[155];            
 
 } header;
@@ -374,6 +370,39 @@ void fill_gname(int statbuf, header* header)
     }
 }
 
+void fill_uname(int statbuf, header* header)
+{
+    struct passwd *pwd;
+    pwd = getpwuid(statbuf);
+    int i = 0;
+    if(pwd != NULL)
+    {
+        while(pwd->pw_name[i] != '\0')
+        {
+            header->uname[i] = pwd->pw_name[i];
+             i+= 1;
+        }
+        header->uname[i] = '\0';
+    }
+}
+
+void fill_gname(int statbuf, header* header)
+{
+    struct group *grp;
+    grp = getgrgid(statbuf);
+    int i = 0;
+
+    if(grp != NULL)
+    {
+        while(grp->gr_name[i] != '\0')
+        {
+            header->gname[i] = grp->gr_name[i];
+            i+= 1;
+        }
+        header->gname[i] = '\0';
+    }
+}
+
 void fill_header(char* file_path, header* header)
 {
     struct stat statbuf;
@@ -388,7 +417,9 @@ void fill_header(char* file_path, header* header)
     fill_mtime(statbuf.st_mtim.tv_sec, header);    
     fill_typeflag(statbuf.st_mode, header);
     fill_magic(header);
-    fill_version(header);   
+    fill_version(header);       
+    fill_uname(statbuf.st_uid, header);               
+    fill_gname(statbuf.st_uid, header);
     fill_devmajor(statbuf.st_rdev, header);
     fill_uname(statbuf.st_uid, header);               
     fill_gname(statbuf.st_uid, header);
