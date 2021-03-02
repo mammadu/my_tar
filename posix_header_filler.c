@@ -370,39 +370,6 @@ void fill_gname(int statbuf, header* header)
     }
 }
 
-void fill_uname(int statbuf, header* header)
-{
-    struct passwd *pwd;
-    pwd = getpwuid(statbuf);
-    int i = 0;
-    if(pwd != NULL)
-    {
-        while(pwd->pw_name[i] != '\0')
-        {
-            header->uname[i] = pwd->pw_name[i];
-             i+= 1;
-        }
-        header->uname[i] = '\0';
-    }
-}
-
-void fill_gname(int statbuf, header* header)
-{
-    struct group *grp;
-    grp = getgrgid(statbuf);
-    int i = 0;
-
-    if(grp != NULL)
-    {
-        while(grp->gr_name[i] != '\0')
-        {
-            header->gname[i] = grp->gr_name[i];
-            i+= 1;
-        }
-        header->gname[i] = '\0';
-    }
-}
-
 void fill_header(char* file_path, header* header)
 {
     struct stat statbuf;
@@ -421,8 +388,7 @@ void fill_header(char* file_path, header* header)
     fill_uname(statbuf.st_uid, header);               
     fill_gname(statbuf.st_uid, header);
     fill_devmajor(statbuf.st_rdev, header);
-    fill_uname(statbuf.st_uid, header);               
-    fill_gname(statbuf.st_uid, header);
+    fill_devminor(statbuf.st_rdev, header);
 
     fill_chksum(header); //It needs to be the last filler function to be called 
 }
