@@ -210,14 +210,14 @@ void fill_chksum(header* header)
     {
         sum += header->version[i];
     }
-    // for (int i = 0; i < my_strlen(header->uname); i++)
-    // {
-    //     sum += header->uname[i];
-    // }
-    // for (int i = 0; i < my_strlen(header->gname); i++)
-    // {
-    //     sum += header->gname[i];
-    // }
+    for (int i = 0; i < my_strlen(header->uname); i++)
+    {
+        sum += header->uname[i];
+    }
+    for (int i = 0; i < my_strlen(header->gname); i++)
+    {
+        sum += header->gname[i];
+    }
     for (int i = 0; i < my_strlen(header->devmajor); i++)
     {
         sum += header->devmajor[i];
@@ -318,6 +318,25 @@ void fill_devmajor(int device_id, header* header)
     }
     header->devmajor[i] = '\0';
     // free(major_id_str);
+    free(zero_string);
+    free(zero_buffer_combination);
+}
+
+void fill_devminor(int device_id, header* header)
+{
+    int minor_id = minor(device_id);
+    char* minor_id_str = my_itoa_base(minor_id, 8);
+    int len = my_strlen(minor_id_str);
+    char* zero_string = zero_filled_string(len, 7);
+    char* zero_buffer_combination = combine_strings(zero_string, minor_id_str);
+    int i = 0;
+    while(zero_buffer_combination[i] != '\0')
+    {
+        header->devminor[i] = zero_buffer_combination[i];
+        i++;
+    }
+    header->devminor[i] = '\0';
+    // free(minor_id_str);
     free(zero_string);
     free(zero_buffer_combination);
 }
