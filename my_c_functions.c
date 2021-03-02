@@ -13,7 +13,6 @@ char* my_strcpy(char* dst, char* src)
 	return (dst);
 }
 
-
 char* my_strdup(char* param_1)
 {
     char* str_copy;

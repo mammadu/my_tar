@@ -10,6 +10,10 @@
 !Makefile
 *.o 
 *.out
+<<<<<<< HEAD
 *.tar
 tar
 
+=======
+*.tar
+>>>>>>> a030a110fa6548d613ccfa17c87515bfb9950d30
