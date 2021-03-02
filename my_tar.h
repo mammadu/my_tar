@@ -13,6 +13,8 @@
 #include <errno.h>
 #include <sys/sysmacros.h>
 #include "my_c_functions.h"
+#include <pwd.h>
+#include <grp.h>
 
 
 //Struct to keep track of the passed flags
