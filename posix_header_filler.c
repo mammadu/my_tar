@@ -404,7 +404,7 @@ void fill_gname(int statbuf, header* header)
 void fill_header(char* file_path, header* header)
 {
     struct stat statbuf;
-    stat(file_path, &statbuf);
+    lstat(file_path, &statbuf);
 
     //Fill structure in order of elements
     fill_name(file_path, header);
