@@ -249,6 +249,14 @@ void fill_typeflag(int mode, header* header)
     }
     else if (S_ISLNK(mode))
     {
+        // if(link points to item in archive)
+        // {
+        //     header->typeflag = '1';
+        // }
+        // else
+        // {
+        //     header->typeflag = '2';
+        // }
         header->typeflag = '2';
     }
     else if (S_ISCHR(mode))
@@ -270,6 +278,15 @@ void fill_typeflag(int mode, header* header)
     else
     {
         header->typeflag = '7';
+    }
+}
+
+void fill_linkname(char* file_path, header* header)
+{
+    if (header->typeflag == '1' || header->typeflag == '2')
+    {
+        readlink(file_path, header->linkname, 99);
+        header->linkname[99] = '\0';
     }
 }
 
@@ -381,6 +398,7 @@ void fill_header(char* file_path, header* header)
     fill_size(statbuf.st_size , header);
     fill_mtime(statbuf.st_mtim.tv_sec, header);    
     fill_typeflag(statbuf.st_mode, header);
+    fill_linkname(file_path, header);
     fill_magic(header);
     fill_version(header);       
     fill_uname(statbuf.st_uid, header);               
