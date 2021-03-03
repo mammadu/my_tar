@@ -241,13 +241,13 @@ void fill_chksum(header* header)
  Links to already archived files
  Reserved files
  */
-void fill_typeflag(int mode, header* header)
+void fill_typeflag(struct stat statbuf, header* header)
 {
-    if (S_ISREG(mode))
+    if (S_ISREG(statbuf.st_mode))
     {
         header->typeflag = '0';
     }
-    else if (S_ISLNK(mode))
+    else if (S_ISLNK(statbuf.st_mode))
     {
         // if(link points to item in archive)
         // {
@@ -259,19 +259,19 @@ void fill_typeflag(int mode, header* header)
         // }
         header->typeflag = '2';
     }
-    else if (S_ISCHR(mode))
+    else if (S_ISCHR(statbuf.st_mode))
     {
         header->typeflag = '3';
     }
-    else if (S_ISBLK(mode))
+    else if (S_ISBLK(statbuf.st_mode))
     {
         header->typeflag = '4';
     }
-    else if (S_ISDIR(mode))
+    else if (S_ISDIR(statbuf.st_mode))
     {
         header->typeflag = '5';
     }
-    else if (S_ISFIFO(mode))
+    else if (S_ISFIFO(statbuf.st_mode))
     {
         header->typeflag = '6';
     }
@@ -317,39 +317,55 @@ void fill_version(header* header)
 void fill_devmajor(int device_id, header* header)
 {
     int major_id = major(device_id);
-    char* major_id_str = my_itoa_base(major_id, 8);
-    int len = my_strlen(major_id_str);
-    char* zero_string = zero_filled_string(len, 7);
-    char* zero_buffer_combination = combine_strings(zero_string, major_id_str);
-    int i = 0;
-    while(zero_buffer_combination[i] != '\0')
+    
+    if (major_id != 0)
     {
-        header->devmajor[i] = zero_buffer_combination[i];
-        i++;
+        char* major_id_str = my_itoa_base(major_id, 8);
+        int len = my_strlen(major_id_str);
+        char* zero_string = zero_filled_string(len, 7);
+        char* zero_buffer_combination = combine_strings(zero_string, major_id_str);
+        int i = 0;
+        while(zero_buffer_combination[i] != '\0')
+        {
+            header->devmajor[i] = zero_buffer_combination[i];
+            i++;
+        }
+        header->devmajor[i] = '\0';
+        // free(major_id_str);
+        free(zero_string);
+        free(zero_buffer_combination);
     }
-    header->devmajor[i] = '\0';
-    // free(major_id_str);
-    free(zero_string);
-    free(zero_buffer_combination);
+    else
+    {
+       header->devmajor[0] = '\0';     
+    }
 }
 
 void fill_devminor(int device_id, header* header)
 {
     int minor_id = minor(device_id);
-    char* minor_id_str = my_itoa_base(minor_id, 8);
-    int len = my_strlen(minor_id_str);
-    char* zero_string = zero_filled_string(len, 7);
-    char* zero_buffer_combination = combine_strings(zero_string, minor_id_str);
-    int i = 0;
-    while(zero_buffer_combination[i] != '\0')
+    
+    if (minor_id != 0)
     {
-        header->devminor[i] = zero_buffer_combination[i];
-        i++;
+        char* minor_id_str = my_itoa_base(minor_id, 8);
+        int len = my_strlen(minor_id_str);
+        char* zero_string = zero_filled_string(len, 7);
+        char* zero_buffer_combination = combine_strings(zero_string, minor_id_str);
+        int i = 0;
+        while(zero_buffer_combination[i] != '\0')
+        {
+            header->devminor[i] = zero_buffer_combination[i];
+            i++;
+        }
+        header->devminor[i] = '\0';
+        //free(minor_id_str);
+        free(zero_string);
+        free(zero_buffer_combination);        
+    } 
+    else
+    {
+       header->devminor[0] = '\0';     
     }
-    header->devminor[i] = '\0';
-    // free(minor_id_str);
-    free(zero_string);
-    free(zero_buffer_combination);
 }
 
 void fill_uname(int statbuf, header* header)
@@ -397,7 +413,7 @@ void fill_header(char* file_path, header* header)
     fill_gid(statbuf.st_gid , header); //did not abstract due to possibly Unknown untested cases
     fill_size(statbuf.st_size , header);
     fill_mtime(statbuf.st_mtim.tv_sec, header);    
-    fill_typeflag(statbuf.st_mode, header);
+    fill_typeflag(statbuf, header);
     fill_linkname(file_path, header);
     fill_magic(header);
     fill_version(header);       
@@ -408,7 +424,6 @@ void fill_header(char* file_path, header* header)
 
     fill_chksum(header); //It needs to be the last filler function to be called 
 }
-
 
 int main()
 {
