@@ -308,7 +308,7 @@ void fill_devminor(int device_id, header* header)
     {
         char* minor_id_str = my_itoa_base(minor_id, 8);
         int len = my_strlen(minor_id_str);
-        char* zero_string = zero_filled_string(len, 7);
+        char* zero_string = zero_filled_string(len, DEVMINOR_LEN);
         char* zero_buffer_combination = combine_strings(zero_string, minor_id_str);
         int i = 0;
         while(zero_buffer_combination[i] != '\0')
