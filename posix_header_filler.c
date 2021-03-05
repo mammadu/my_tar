@@ -149,7 +149,6 @@ void fill_size(int statsize, header* header)
         i += 1;
     }
     header->size[i] = '\0';
-    // printf("%s", header->size);
 
     free(zero_buffer_combination);
     free(zero_string);
@@ -172,65 +171,19 @@ void fill_mtime(int mtime, header* header)
 void fill_chksum(header* header)
 {
     int sum = 0;
-    for (int i = 0; i < my_strlen(header->name); i++)
+    char* header_index = header->name;
+    int i = 0;
+    while (i <= 500)
     {
-        sum += header->name[i];
+        sum += header_index[i];
+        i++;
     }
-    for (int i = 0; i < my_strlen(header->mode); i++)
-    {
-        sum += header->mode[i];
-    }
-    for (int i = 0; i < my_strlen(header->uid); i++)
-    {
-        sum += header->uid[i];
-    }
-    for (int i = 0; i < my_strlen(header->gid); i++)
-    {
-        sum += header->gid[i];
-    }
-    for (int i = 0; i < my_strlen(header->size); i++)
-    {
-        sum += header->size[i];
-    }
-    for (int i = 0; i < my_strlen(header->mtime); i++)
-    {
-        sum += header->mtime[i];
-    }
-    sum += header->typeflag;
-    for (int i = 0; i < my_strlen(header->linkname); i++)
-    {
-        sum += header->linkname[i];
-    }
-    for (int i = 0; i < my_strlen(header->magic); i++)
-    {
-        sum += header->magic[i];
-    }
-    for (int i = 0; i < my_strlen(header->version); i++)
-    {
-        sum += header->version[i];
-    }
-    for (int i = 0; i < my_strlen(header->uname); i++)
-    {
-        sum += header->uname[i];
-    }
-    for (int i = 0; i < my_strlen(header->gname); i++)
-    {
-        sum += header->gname[i];
-    }
-    for (int i = 0; i < my_strlen(header->devmajor); i++)
-    {
-        sum += header->devmajor[i];
-    }
-    for (int i = 0; i < my_strlen(header->devminor); i++)
-    {
-        sum += header->devminor[i];
-    }
-    // sum += 32 * 8;
+    sum += 32 * 8;
     char* chksum = my_itoa_base(sum, 8);
     int len = my_strlen(chksum);
     char* zero_string = zero_filled_string(len, 6);
     char* zero_buffer_combination = combine_strings(zero_string, chksum);
-    int i = 0;
+    i = 0;
     while (i < my_strlen(zero_buffer_combination))
     {
         header->chksum[i] = zero_buffer_combination[i];
@@ -407,11 +360,23 @@ void fill_gname(int statbuf, header* header)
     }
 }
 
+void null_filler(header* header)
+{
+    char* header_index = header->name;
+    int i = 0;
+    while (i <= 500)
+    {
+        header_index[i] = '\0';
+        i++;
+    }
+}
+
 void fill_header(char* file_path, header* header)
 {
     struct stat statbuf;
     lstat(file_path, &statbuf);
 
+    null_filler(header);
     //Fill structure in order of elements
     fill_name(file_path, header);
     fill_mode(statbuf.st_mode, header);
