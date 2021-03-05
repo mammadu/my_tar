@@ -173,7 +173,7 @@ void fill_chksum(header* header)
     int sum = 0;
     char* header_index = header->name;
     int i = 0;
-    while (i <= 500)
+    while (i <= HEADER_SIZE)
     {
         sum += header_index[i];
         i++;
@@ -364,7 +364,7 @@ void null_filler(header* header)
 {
     char* header_index = header->name;
     int i = 0;
-    while (i <= 500)
+    while (i <= HEADER_SIZE)
     {
         header_index[i] = '\0';
         i++;
