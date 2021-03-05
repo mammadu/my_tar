@@ -3,10 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "my_c_functions.h"
+#include "my_tar.h"
 
 typedef struct node
 {
-    char* string;
+    header* header;
+    char* string; 
     struct node* next;
 }node;
 
