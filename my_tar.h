@@ -58,6 +58,7 @@ typedef struct posix_header
 // Source: http://www.gnu.org/software/tar/manual/html_node/Blocking.html
 # define BLOCK_SIZE	(512)
 # define HEADER_SIZE (500)
+# define DEVMINOR_LEN (7)
 
 int create_archive(char* archive_name);
 int check_existence(char* file_path);
