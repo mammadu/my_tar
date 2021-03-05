@@ -1,5 +1,4 @@
 #include "my_tar.h"
-#include "my_c_functions.c"
 /*
 We are going to have all the function to fill the 
 posix_header structure in this file!
@@ -59,10 +58,12 @@ void fill_name(char* file_path, header* header)
 void fill_mode(int statmode, header* header)
 {
     char* itoa_buffer = my_itoa_base(statmode, 8);
-    int i = 1;
-    int j = 2;
+    int i = 3;
+    int j = 4;
     header->mode[0] = '0';
     header->mode[1] = '0';
+    header->mode[2] = '0';
+    header->mode[3] = '0';
     while(itoa_buffer[i])
     {
         header->mode[j] = itoa_buffer[i];
@@ -224,14 +225,19 @@ void fill_chksum(header* header)
     {
         sum += header->devminor[i];
     }
+    // sum += 32 * 8;
     char* chksum = my_itoa_base(sum, 8);
     int len = my_strlen(chksum);
-    char* zero_string = zero_filled_string(len, 7);
-    char* zero_buffer_combination= combine_strings(zero_string, chksum);    
-    for (int i = 0; i < my_strlen(zero_buffer_combination); i++)
+    char* zero_string = zero_filled_string(len, 6);
+    char* zero_buffer_combination = combine_strings(zero_string, chksum);
+    int i = 0;
+    while (i < my_strlen(zero_buffer_combination))
     {
         header->chksum[i] = zero_buffer_combination[i];
+        i++;
     }
+    header->chksum[i] = '\0';
+    header->chksum[i + 1] = ' ';
     free(chksum);
     free(zero_string);
     free(zero_buffer_combination);
