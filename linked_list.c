@@ -12,7 +12,7 @@ node* create_link_with_max_string_length(int max_string_length)
 {
     node* link = malloc(sizeof(node));
     link->string = malloc(max_string_length * sizeof(char));
-    link->next = NULL;    
+    link->next = NULL;
     return link;
 }
 
