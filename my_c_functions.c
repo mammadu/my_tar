@@ -330,3 +330,14 @@ int my_strcmp(char* param_1, char* param_2)
     }
     return 0;
 }
+
+void null_filler(void* pointer, int length)
+{
+    char* index = pointer;
+    int i = 0;
+    while (i <= length)
+    {
+        index[i] = '\0';
+        i++;
+    }
+}

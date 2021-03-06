@@ -2,11 +2,14 @@
 #define linked_list_H
 #include <stdio.h>
 #include <stdlib.h>
+#include "posix_header_filler.h"
 #include "my_c_functions.h"
 
 typedef struct node
 {
     char* string;
+    char* file_contents;
+    header* header;
     struct node* next;
 }node;
 

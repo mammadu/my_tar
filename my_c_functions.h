@@ -26,4 +26,6 @@ char* my_itoa_base(int value, int base);
 
 int my_strcmp(char* param_1, char* param_2);
 
+void null_filler(void* pointer, int length);
+
 #endif
