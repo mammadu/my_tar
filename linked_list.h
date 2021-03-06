@@ -6,7 +6,9 @@
 
 typedef struct node
 {
-    char* string;
+    char* string; //filename
+    char* file_content;
+    header* header;
     struct node* next;
 }node;
 

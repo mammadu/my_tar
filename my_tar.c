@@ -1,5 +1,6 @@
 #include "my_tar.h"
-// #include "posix_header_filler.h"
+#include "linked_list.h"
+#include "posix_header_filler.c"
 
 //This is option C
 int create_archive(char* archive_name)
@@ -159,6 +160,32 @@ void select_option(flags* my_flags, char* argv[])
     } 
 }
 
+//Linked list implementation 
+
+void head_initializer(node* head, char* file_name)
+{
+    head->string = my_strdup(file_name);
+    fill_header( head->string , head->header);
+    printf("%s", head->header->name);
+}
+
+void linked_list_initializer(int nodes_qty, char** argv, node* head)
+{
+    head_initializer(head, "a");    
+    int i = 2;
+    node* node_buffer;
+
+    // while(i < nodes_qty)
+    // {
+    //     node_buffer->string = my_strdup(argv[i]);
+    //     fill_header(node_buffer->string, node_buffer->header);
+
+    //     i += 1;
+    // }
+}
+
+
+
 // int main(int argc, char** argv)
 // {
 //     int existence = check_existence(argv[1]);
@@ -184,6 +211,10 @@ void select_option(flags* my_flags, char* argv[])
 int main(int argc, char** argv)
 {
     flags flag;
+    node* head = malloc(sizeof(node));
+    
+    //int nodes_qty, char** argv, node* head
+    linked_list_initializer(argc, argv, head);
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
     select_option(&flag, argv);

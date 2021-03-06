@@ -1,4 +1,4 @@
-#include "my_tar.h"
+
 /*
 We are going to have all the function to fill the 
 posix_header structure in this file!
@@ -398,21 +398,21 @@ void fill_header(char* file_path, header* header)
     fill_chksum(header); //It needs to be the last filler function to be called 
 }
 
-int main()
-{
-    header* my_header = malloc(sizeof(header));
-    printf("enter name of file or directory\n");
-    char* file_path = malloc(100);
-    scanf("%s", file_path);
-    fill_header(file_path, my_header);
-    int fd = open("test.tar", O_RDWR | O_CREAT, S_IRWXU);
-    printf("fd = %d\n", fd);
-    int bytes_written = write(fd, my_header, sizeof(header));
-    printf("number of bytes written is = %d\n", bytes_written);
-    printf("errno = %d\n", errno);
-    close(fd);
+// int main()
+// {
+//     header* my_header = malloc(sizeof(header));
+//     printf("enter name of file or directory\n");
+//     char* file_path = malloc(100);
+//     scanf("%s", file_path);
+//     fill_header(file_path, my_header);
+//     int fd = open("test.tar", O_RDWR | O_CREAT, S_IRWXU);
+//     printf("fd = %d\n", fd);
+//     int bytes_written = write(fd, my_header, sizeof(header));
+//     printf("number of bytes written is = %d\n", bytes_written);
+//     printf("errno = %d\n", errno);
+//     close(fd);
 
-    free(file_path);
-    free(my_header);
-    return 0;
-}
+//     free(file_path);
+//     free(my_header);
+//     return 0;
+// }

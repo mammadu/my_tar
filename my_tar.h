@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <sys/sysmacros.h>
 #include "my_c_functions.h"
+#include "posix_header_filler.h"
 #include <pwd.h>
 #include <grp.h>
 
@@ -82,5 +83,6 @@ int check_existence(char* file_path);
 int check_permission(char* file_path);
 void flag_hunter(int argc, char* argv[], flags* my_flags);
 char* my_strcpy(char* dst, char* src);
+void null_filler(void* pointer, int length);
 
 #endif
