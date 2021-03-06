@@ -59,6 +59,7 @@ typedef struct posix_header
 # define BLOCK_SIZE	(512)
 # define HEADER_SIZE (500)
 # define DEVMINOR_LEN (7)
+# define SIZE_LEN (12)
 
 int create_archive(char* archive_name);
 int check_existence(char* file_path);

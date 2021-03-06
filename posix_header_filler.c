@@ -5,9 +5,9 @@ posix_header structure in this file!
 
 typedef struct posix_header
 { 
-  //Done                             
-  char name[100];               
-  char mode[8];   
+  //Done
+  char name[100];
+  char mode[8];
   char uid[8];
   char gid[8];
   char size[12];
@@ -15,19 +15,19 @@ typedef struct posix_header
   
   char magic[6];
   char version[2];
-  char uname[32];               
+  char uname[32];
   char gname[32];
-  char devmajor[8];             
-  char devminor[8];   
+  char devmajor[8];
+  char devminor[8];
     
 
   //In progress
-  char chksum[8];  
-  char typeflag;             
+  char chksum[8];
+  char typeflag;
                 
-  //Undone         
+  //Undone
   char prefix[155];
-  char linkname[100];            
+  char linkname[100];
 
 } header;
 
@@ -52,7 +52,7 @@ void fill_name(char* file_path, header* header)
         header->name[i] = file_path[i];
         i += 1;
     }
-    header->name[i] = '\0';    
+    header->name[i] = '\0';
 }
 
 void fill_mode(int statmode, header* header)
@@ -72,7 +72,7 @@ void fill_mode(int statmode, header* header)
     }
     header->mode[j] = '\0';
    
-    free(itoa_buffer); 
+    free(itoa_buffer);
 }
 
 void fill_uid(int statuid,  header* header )
@@ -137,22 +137,35 @@ char* zero_filled_string(int len, int field_size) //field size is 1 less than th
 
 void fill_size(int statsize, header* header)
 {
-    char* statsize_buffer = my_itoa_base(statsize, 8);
-    int statsize_buffer_len = my_strlen(statsize_buffer);
-    char* zero_string = zero_filled_string(statsize_buffer_len, 11);
-    char* zero_buffer_combination= combine_strings(zero_string, statsize_buffer);
-    int i = 0;
-
-    while(zero_buffer_combination[i] != '\0')
+    if (header->typeflag == '1' || header->typeflag == '2')
     {
-        header->size[i] = zero_buffer_combination[i];
-        i += 1;
+        int i = 0;
+        while (i < SIZE_LEN - 1)
+        {
+            header->size[i] = '0';
+            i++;
+        }
+        header->size[i] = '\0';
     }
-    header->size[i] = '\0';
+    else
+    {
+        char* statsize_buffer = my_itoa_base(statsize, 8);
+        int statsize_buffer_len = my_strlen(statsize_buffer);
+        char* zero_string = zero_filled_string(statsize_buffer_len, SIZE_LEN - 1);
+        char* zero_buffer_combination= combine_strings(zero_string, statsize_buffer);
+        int i = 0;
 
-    free(zero_buffer_combination);
-    free(zero_string);
-    free (statsize_buffer);
+        while(zero_buffer_combination[i] != '\0')
+        {
+            header->size[i] = zero_buffer_combination[i];
+            i += 1;
+        }
+        header->size[i] = '\0';
+
+        free(zero_buffer_combination);
+        free(zero_string);
+        free (statsize_buffer);
+    }
 }
 
 void fill_mtime(int mtime, header* header)
@@ -296,7 +309,7 @@ void fill_devmajor(int device_id, header* header)
     }
     else
     {
-       header->devmajor[0] = '\0';     
+       header->devmajor[0] = '\0';
     }
 }
 
@@ -319,11 +332,11 @@ void fill_devminor(int device_id, header* header)
         header->devminor[i] = '\0';
         //free(minor_id_str);
         free(zero_string);
-        free(zero_buffer_combination);        
+        free(zero_buffer_combination);
     } 
     else
     {
-       header->devminor[0] = '\0';     
+       header->devminor[0] = '\0';
     }
 }
 
@@ -382,13 +395,13 @@ void fill_header(char* file_path, header* header)
     fill_mode(statbuf.st_mode, header);
     fill_uid(statbuf.st_uid, header); // this and below function are Twin functions 
     fill_gid(statbuf.st_gid , header); //did not abstract due to possibly Unknown untested cases
-    fill_size(statbuf.st_size , header);
-    fill_mtime(statbuf.st_mtim.tv_sec, header);    
+    fill_mtime(statbuf.st_mtim.tv_sec, header);
     fill_typeflag(statbuf, header);
+    fill_size(statbuf.st_size , header);
     fill_linkname(file_path, header);
     fill_magic(header);
-    fill_version(header);       
-    fill_uname(statbuf.st_uid, header);               
+    fill_version(header);
+    fill_uname(statbuf.st_uid, header);
     fill_gname(statbuf.st_uid, header);
     fill_devmajor(statbuf.st_rdev, header);
     fill_devminor(statbuf.st_rdev, header);
@@ -412,5 +425,5 @@ int main()
 
     free(file_path);
     free(my_header);
-    return 0;   
+    return 0;
 }
