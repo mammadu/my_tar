@@ -155,7 +155,6 @@ void head_initializer(node* head, char* file_name)
     head->string = my_strdup(file_name);
     head->header = malloc(sizeof(header));
     fill_header( head->string , head->header);
-    // printf("%s\n", head->header->name);
 }
 
 void linked_list_initializer(int nodes_qty, char** argv, node* head)

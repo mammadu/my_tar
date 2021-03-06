@@ -4,34 +4,6 @@
 We are going to have all the function to fill the 
 posix_header structure in this file!
 
-typedef struct posix_header
-{ 
-  //Done
-  char name[100];
-  char mode[8];
-  char uid[8];
-  char gid[8];
-  char size[12];
-  char mtime[12];
-  
-  char magic[6];
-  char version[2];
-  char uname[32];
-  char gname[32];
-  char devmajor[8];
-  char devminor[8];
-    
-
-  //In progress
-  char chksum[8];
-  char typeflag;
-                
-  //Undone
-  char prefix[155];
-  char linkname[100];
-
-} header;
-
 Type Flag	File Type
 0 or null	Regular file
 1	Link to another file already archived
