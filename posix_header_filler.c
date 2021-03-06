@@ -373,23 +373,12 @@ void fill_gname(int statbuf, header* header)
     }
 }
 
-void null_filler(header* header)
-{
-    char* header_index = header->name;
-    int i = 0;
-    while (i <= HEADER_SIZE)
-    {
-        header_index[i] = '\0';
-        i++;
-    }
-}
-
 void fill_header(char* file_path, header* header)
 {
     struct stat statbuf;
     lstat(file_path, &statbuf);
 
-    null_filler(header);
+    null_filler(header, HEADER_SIZE);
     //Fill structure in order of elements
     fill_name(file_path, header);
     fill_mode(statbuf.st_mode, header);

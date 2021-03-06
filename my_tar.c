@@ -1,4 +1,5 @@
 #include "my_tar.h"
+// #include "posix_header_filler.h"
 
 //This is option C
 int create_archive(char* archive_name)
@@ -58,6 +59,16 @@ int check_permission(char* file_path)
 
 */
 
+void null_filler(void* pointer, int length)
+{
+    char* index = pointer;
+    int i = 0;
+    while (i <= length)
+    {
+        index[i] = '\0';
+        i++;
+    }
+}
 
 void flag_initializer(flags* my_flags)
 {
