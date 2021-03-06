@@ -30,6 +30,25 @@ typedef struct flag_structs
     char unknown;
 } flags;
 
+# define BLOCK_SIZE	(512)
+# define HEADER_SIZE (500)
+
+# define NAME_LEN (100)
+# define MODE_LEN_LEN (8)
+# define UID_LEN_LEN (8)
+# define GID_LEN (8)
+# define SIZE_LEN (12)
+# define MTIME_LEN (12)
+# define CHKSUM_LEN (8)
+# define LINKNAME_LEN (100)
+# define MAGIC_LEN (6)
+# define VERSION_LEN (2)
+# define UNAME_LEN (32)
+# define GNAME_LEN (32)
+# define DEVMAJOR_LEN (8)
+# define DEVMINOR_LEN (8)
+# define PREFIX_LEN (155)
+
 //Metadata header for collection of file data 
 
 typedef struct posix_header
@@ -56,10 +75,7 @@ typedef struct posix_header
 // Read block size.
 // Used 512 bytes to copy tar's block size. :)
 // Source: http://www.gnu.org/software/tar/manual/html_node/Blocking.html
-# define BLOCK_SIZE	(512)
-# define HEADER_SIZE (500)
-# define DEVMINOR_LEN (7)
-# define SIZE_LEN (12)
+
 
 int create_archive(char* archive_name);
 int check_existence(char* file_path);

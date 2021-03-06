@@ -191,10 +191,10 @@ void fill_chksum(header* header)
         sum += header_index[i];
         i++;
     }
-    sum += 32 * 8;
+    sum += 32 * 8; //We assume that the chksum area are whitespaces so we add the value of a whitespace (32) times the number of whitespaces/
     char* chksum = my_itoa_base(sum, 8);
     int len = my_strlen(chksum);
-    char* zero_string = zero_filled_string(len, 6);
+    char* zero_string = zero_filled_string(len, CHKSUM_LEN - 2); //We subtract 2 here because the last two characters of the checksum are a NULL and a whitespace
     char* zero_buffer_combination = combine_strings(zero_string, chksum);
     i = 0;
     while (i < my_strlen(zero_buffer_combination))
@@ -257,7 +257,7 @@ void fill_linkname(char* file_path, header* header)
 {
     if (header->typeflag == '1' || header->typeflag == '2')
     {
-        readlink(file_path, header->linkname, 99);
+        readlink(file_path, header->linkname, LINKNAME_LEN - 1);
         header->linkname[99] = '\0';
     }
 }
@@ -294,7 +294,7 @@ void fill_devmajor(int device_id, header* header)
     {
         char* major_id_str = my_itoa_base(major_id, 8);
         int len = my_strlen(major_id_str);
-        char* zero_string = zero_filled_string(len, 7);
+        char* zero_string = zero_filled_string(len, DEVMAJOR_LEN - 1);
         char* zero_buffer_combination = combine_strings(zero_string, major_id_str);
         int i = 0;
         while(zero_buffer_combination[i] != '\0')
@@ -396,7 +396,7 @@ void fill_header(char* file_path, header* header)
     fill_uid(statbuf.st_uid, header); // this and below function are Twin functions 
     fill_gid(statbuf.st_gid , header); //did not abstract due to possibly Unknown untested cases
     fill_mtime(statbuf.st_mtim.tv_sec, header);
-    fill_typeflag(statbuf, header);
+    fill_typeflag(statbuf, header); //fill_typeflag must come before fill_size and fill_linkname because those functions depend on typeflag
     fill_size(statbuf.st_size , header);
     fill_linkname(file_path, header);
     fill_magic(header);
