@@ -187,6 +187,7 @@ int main(int argc, char** argv)
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
     select_option(&flag, argv);
-        
+
+    
     return 0;
 }
