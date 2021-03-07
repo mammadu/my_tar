@@ -10,9 +10,9 @@ char* combine_strings(char* first_string, char* second_string);
 
 int my_strlen(char* string);
 
-int my_recursive_pow(int param_1, int param_2);
+int my_recursive_pow(int base, int exponent);
 
-int my_atoi(char* param_1);
+int my_atoi_base(char* str, int str_base);
 
 void my_putstr(char* param_1);
 

@@ -55,46 +55,46 @@ int my_strlen(char* string)
     return i;
 }
 
-int my_recursive_pow(int param_1, int param_2)
+int my_recursive_pow(int base, int exponent)
 {
     int return_val;
-    if (param_2 == 0)
+    if (exponent == 0)
     {
         return_val = 1;
     }
     else
     {
-        return_val = param_1 * my_recursive_pow(param_1, param_2 - 1);
+        return_val = base * my_recursive_pow(base, exponent - 1);
     }
     return return_val;
 }
 
-int my_atoi(char* param_1)
+int my_atoi_base(char* str, int str_base)
 {
     int return_val = 0; //This holds the return value
     int i = 0; //This will store the count of characters that are integers
-    if (param_1[i] == '-') //This is to catch if the number is negative
+    if (str[i] == '-') //This is to catch if the number is negative
     {
         i++;
     }
-    if (param_1[i] <= 47 || param_1[i] >= 58) //This is to check if the current character is an integer, otherwise 
+    if (str[i] <= 47 || str[i] >= 58) //This is to check if the current character is an integer, otherwise 
     {
         return return_val;
     }
-    while (param_1[i] > 47 && param_1[i] < 58)
+    while (str[i] > 47 && str[i] < 58)
     {
         i++;
     }
     int index = i - 1; //This is used to iterate from the last integer character to the first integer character
     for (int j = 0; j < i; j++)
     {
-        if (param_1[index] == '-')
+        if (str[index] == '-')
         {
             return_val = return_val * -1;
         }
         else
         {
-            return_val = return_val + (param_1[index] - 48) * my_recursive_pow(10, j);
+            return_val = return_val + (str[index] - 48) * my_recursive_pow(str_base, j);
             index--;
         }
     }

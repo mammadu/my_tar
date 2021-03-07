@@ -151,15 +151,19 @@ void select_option(flags* my_flags, char* argv[])
 
 //Linked list implementation
 
-char* fill_content(char* file_path, int size)
+char* fill_contents(char* file_path, int size)
 {
-    char file_content[size];
+    char* file_contents = malloc((size + 1) * sizeof(char));
+    int fd = open(file_path, O_RDONLY);
+    read(fd, file_contents, size);
     /*
     open file_path
     read opened file and write to 
     */
-    return file_content;
-} 
+
+    close(fd);
+    return file_contents;
+}
 
 void head_initializer(node* head, char* file_name)
 {
@@ -173,42 +177,42 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
     head_initializer(head, argv[2]);
     int i = 3;
     node* node_buffer;
-    struct stat statbuf; 
+    node_buffer = head->next;
 
     while(i < nodes_qty)
     {
+        node_buffer = malloc(sizeof(node));
         node_buffer->string = my_strdup(argv[i]);
         node_buffer->header = malloc(sizeof(header));
         
+        
         fill_header(node_buffer->string, node_buffer->header);
-
-        //node_buffer->file_content = malloc(sizeof(my_atoi(node_buffer->header->size) * char))
+        node_buffer->file_contents = fill_contents(node_buffer->string, my_atoi_base(node_buffer->header->size, 8));
+        // printf("file %s has file size %o\n", node_buffer->string, my_strlen(node_buffer->file_contents));
         
         //fill the content
         //Allocate memory for node_buffer->file_contents
         
         node_buffer = node_buffer->next;
+
+
         i += 1;
     }
 }
 
 // int main(int argc, char** argv)
 // {
-//     int existence = check_existence(argv[1]);
-//     printf("%s has existence %d\n", argv[1], existence);
-//     // flags* my_flags;
-//     // header* my_header;
+//     node* head = create_link_with_string("Hello");
+//     node* first = create_link_with_string("muthafuckers");
+//     append_link(first, head);
+//     node* second = create_link_with_string("hey");
+//     append_link(second, head);
+//     node* third = create_link_with_string("hi");
+//     append_link(third, head);
+//     int count = read_list(head);
+//     printf("count = %d\n", count);
+//     free_linked_list(second);
 
-//     // my_flags = malloc(sizeof(flags));
-//     // my_header = malloc(sizeof(header));
-    
-//     // flag_initializer(my_flags); 
-//     // flag_hunter(argc, argv, my_flags); 
-    
-//     // //logic router
-//     // select_option(my_flags, argv);
-//     // free(my_header);
-//     // free(my_flags);
     
 //     return 0;
 // }
@@ -218,11 +222,12 @@ int main(int argc, char** argv)
 {
     flags flag;
     node* head = malloc(sizeof(node));
-
+    printf("size of argc = %d\n", argc);
     //int nodes_qty, char** argv, node* head
     linked_list_initializer(argc, argv, head);
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
     select_option(&flag, argv);
+    free_linked_list(head);
     return 0;
 }

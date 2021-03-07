@@ -27,4 +27,6 @@ int read_list(node* head);
 
 node* return_next_link(node* link);
 
+void free_linked_list(node* head);
+
 #endif

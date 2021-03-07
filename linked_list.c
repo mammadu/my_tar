@@ -6,7 +6,7 @@ node* create_link_with_string(char* string)
 {
     node* link = malloc(sizeof(node));
     link->string = my_strdup(string);
-    link->next = NULL;    
+    link->next = NULL;
     return link;
 }
 
@@ -53,7 +53,7 @@ int read_list(node* head)
     while (head != NULL)
     {
         index++;
-        printf("%s", head->string);
+        printf("%s\n", head->string);
         head = head->next;
     }
     return index;
@@ -64,4 +64,21 @@ node* return_next_link(node* link)
 {
     node* next_link = link->next;
     return next_link;
+}
+
+void free_linked_list(node* head)
+{
+    node* temp;
+    while (head != NULL)
+    {
+        
+        temp = head;
+        printf("node pointer = %p", temp);
+        printf("node pointer string = %s", temp->string);
+        // free(temp->string);
+        // free(temp->file_contents);
+        // free(temp->header);
+        head = head->next;
+        free(temp);
+    }
 }
