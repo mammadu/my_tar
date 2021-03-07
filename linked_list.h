@@ -8,8 +8,8 @@
 typedef struct node
 {
     char* string;
-    char* file_contents;
-    header* header;
+    // header* header;
+    // char* file_contents;
     struct node* next;
 }node;
 

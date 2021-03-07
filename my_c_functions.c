@@ -17,11 +17,14 @@ char* my_strdup(char* param_1)
 {
     char* str_copy;
     int length = my_strlen(param_1);
-    str_copy = (char*)malloc(length * sizeof(char));
-    for(int i = 0; i < length; i++)
+    str_copy = malloc((length + 1) * sizeof(char));
+    int i = 0;
+    while (i < length)
     {
         str_copy[i] = param_1[i];
+        i++;
     }
+    str_copy[i] = '\0';
     return str_copy;
 }
 
