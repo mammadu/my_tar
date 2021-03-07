@@ -150,6 +150,17 @@ void select_option(flags* my_flags, char* argv[])
 }
 
 //Linked list implementation
+
+char* fill_content(char* file_path, int size)
+{
+    char file_content[size];
+    /*
+    open file_path
+    read opened file and write to 
+    */
+    return file_content;
+} 
+
 void head_initializer(node* head, char* file_name)
 {
     head->string = my_strdup(file_name);
@@ -159,17 +170,26 @@ void head_initializer(node* head, char* file_name)
 
 void linked_list_initializer(int nodes_qty, char** argv, node* head)
 {
-    head_initializer(head, "a");
-    int i = 2;
+    head_initializer(head, argv[2]);
+    int i = 3;
     node* node_buffer;
+    struct stat statbuf; 
 
-    // while(i < nodes_qty)
-    // {
-    //     node_buffer->string = my_strdup(argv[i]);
-    //     fill_header(node_buffer->string, node_buffer->header);
+    while(i < nodes_qty)
+    {
+        node_buffer->string = my_strdup(argv[i]);
+        node_buffer->header = malloc(sizeof(header));
+        
+        fill_header(node_buffer->string, node_buffer->header);
 
-    //     i += 1;
-    // }
+        //node_buffer->file_content = malloc(sizeof(my_atoi(node_buffer->header->size) * char))
+        
+        //fill the content
+        //Allocate memory for node_buffer->file_contents
+        
+        node_buffer = node_buffer->next;
+        i += 1;
+    }
 }
 
 // int main(int argc, char** argv)
