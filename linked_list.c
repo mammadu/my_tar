@@ -72,11 +72,9 @@ void free_linked_list(node* head)
     while (head != NULL)
     {
         temp = head;
-        // printf("node pointer = %p", temp);
-        // printf("node pointer string = %s", temp->string);
         free(temp->string);
-        // free(temp->file_contents);
-        // free(temp->header);
+        free(temp->file_contents);
+        free(temp->header);
         head = head->next;
         free(temp);
     }

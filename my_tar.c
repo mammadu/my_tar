@@ -206,15 +206,57 @@ char* fill_contents(char* file_path, int file_size)
 
 int main(int argc, char** argv)
 {
-    node* head = create_link_with_string("Hello");
-    node* first = create_link_with_string("muthafuckers");
-    append_link(first, head);
-    node* second = create_link_with_string("hey");
+    //these are the names of files in my docode
+    char* str_0 = "a";
+    char* str_1 = "b";
+    char* str_2 = "file1";
+    char* str_3 = "Makefile";
+
+    //we will make the nodes, allocate space for the header, then fill the headers
+    node* head = create_link_with_string(str_0);
+    head->header = malloc(sizeof(header));
+    fill_header(str_0, head->header);
+
+    node* first = create_link_with_string(str_1);
+    first->header = malloc(sizeof(header));
+    fill_header(str_1, first->header);
+    append_link(first, head); //append links for every node after the head
+
+    node* second = create_link_with_string(str_2);
+    second->header = malloc(sizeof(header));
+    fill_header(str_2, second->header);
     append_link(second, head);
-    node* third = create_link_with_string("hi");
+
+    node* third = create_link_with_string(str_3);
+    third->header = malloc(sizeof(header));
+    fill_header(str_3, third->header);
     append_link(third, head);
+
     int count = read_list(head);
     printf("count = %d\n", count);
+
+    //allocate memory for file_contents, then read the file date to the file_contents
+    node* temp = head;
+    while (temp != NULL)
+    {
+        int size = my_atoi_base(temp->header->size, 8);
+        temp->file_contents = malloc(size * sizeof(char));
+        int fd = open(temp->string, O_RDONLY);
+        int bytes_read = read(fd, temp->file_contents, size);
+        printf("bytes read = %d\n", bytes_read);
+        printf("errno = %d\n", errno);
+        close(fd);
+        temp = temp->next;
+    }
+
+    //this block verifies that we can free headers in a link
+    // while (temp != NULL)
+    // {
+    //     int size = my_atoi_base(temp->header->size, 8);
+    //     printf("size of %s = %d\n", temp->string, size);
+    //     temp = temp->next;
+    // }
+
     free_linked_list(head);
 
     return 0;
