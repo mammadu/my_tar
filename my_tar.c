@@ -166,38 +166,12 @@ char* fill_contents(char* file_path, int file_size)
     return file_contents;
 }
 
-// void head_initializer(node* head, char* file_name)
-// {
-//     head->string = my_strdup(file_name);
-//     head->header = malloc(sizeof(header));
-//     fill_header(head->string , head->header);
-//     int file_size = my_atoi_base(head->header->size, 8);
-//     fill_contents(head->string, file_size);
-//     head->next = NULL;
-// }
-
 void linked_list_initializer(int nodes_qty, char** argv, node* head)
 {
-    // head_initializer(head, argv[2]);
     int i = 4;
 
     while(i < nodes_qty)
     {
-        // node_buffer = malloc(sizeof(node));
-        // node_buffer->string = my_strdup(argv[i]);
-        // node_buffer->header = malloc(sizeof(header));        
-        
-        // fill_header(node_buffer->string, node_buffer->header);
-        // int file_size = my_atoi_base(node_buffer->header->size, 8);
-        // node_buffer->file_contents = fill_contents(node_buffer->string, file_size);
-        // node_buffer->next = NULL;
-        // // printf("file %s has file size %o\n", node_buffer->string, my_strlen(node_buffer->file_contents));
-        
-        // //fill the content
-        // //Allocate memory for node_buffer->file_contents
-        
-        // node_buffer = node_buffer->next;
-
         node* temp = create_link_with_string(argv[i]);
         head->next = temp;
         head = head->next;
@@ -268,10 +242,7 @@ int main(int argc, char** argv)
 {
     flags flag;
     node* head = create_link_with_string(argv[3]);
-    printf("size of argc = %d\n", argc);
-    //int nodes_qty, char** argv, node* head
-    linked_list_initializer(argc, argv, head);
-    // printf("file_contents = %s\n", head->file_contents);
+    linked_list_initializer(argc, argv, head);=
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
     select_option(&flag, argv);
