@@ -151,21 +151,6 @@ void select_option(flags* my_flags, char* argv[])
 
 //Linked list implementation
 
-char* fill_contents(char* file_path, int file_size)
-{
-    char* file_contents = malloc((file_size) * sizeof(char));
-    int fd = open(file_path, O_RDONLY);
-    int bytes_read = read(fd, file_contents, file_size);
-    /*
-    open file_path
-    read opened file and write to 
-    */
-    close(fd);
-    printf("size of bytes read = %d\n", bytes_read);
-    printf("size of fill contents = %d\n", my_strlen(file_contents));
-    return file_contents;
-}
-
 void linked_list_initializer(int nodes_qty, char** argv, node* head)
 {
     int i = 4;
@@ -179,70 +164,12 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
     }
 }
 
-// int main(int argc, char** argv)
-// {
-//     //these are the names of files in my docode
-//     char* str_0 = "a";
-//     char* str_1 = "b";
-//     char* str_2 = "main";
-//     char* str_3 = "Makefile";
-
-//     //we will make the nodes, allocate space for the header, then fill the headers
-//     node* head = create_link_with_string(str_0);
-//     head->header = malloc(sizeof(header));
-//     fill_header(str_0, head->header);
-
-//     node* first = create_link_with_string(str_1);
-//     first->header = malloc(sizeof(header));
-//     fill_header(str_1, first->header);
-//     append_link(first, head); //append links for every node after the head
-
-//     node* second = create_link_with_string(str_2);
-//     second->header = malloc(sizeof(header));
-//     fill_header(str_2, second->header);
-//     append_link(second, head);
-
-//     node* third = create_link_with_string(str_3);
-//     third->header = malloc(sizeof(header));
-//     fill_header(str_3, third->header);
-//     append_link(third, head);
-
-//     int count = read_list(head);
-//     printf("count = %d\n", count);
-
-//     //allocate memory for file_contents, then read the file date to the file_contents
-//     node* temp = head;
-//     while (temp != NULL)
-//     {
-//         int size = my_atoi_base(temp->header->size, 8);
-//         temp->file_contents = malloc(size * sizeof(char));
-//         int fd = open(temp->string, O_RDONLY);
-//         int bytes_read = read(fd, temp->file_contents, size);
-//         printf("bytes read = %d\n", bytes_read);
-//         printf("errno = %d\n", errno);
-//         close(fd);
-//         temp = temp->next;
-//     }
-
-//     //this block verifies that we can free headers in a link
-//     // while (temp != NULL)
-//     // {
-//     //     int size = my_atoi_base(temp->header->size, 8);
-//     //     printf("size of %s = %d\n", temp->string, size);
-//     //     temp = temp->next;
-//     // }
-
-//     free_linked_list(head);
-
-//     return 0;
-// }
-
 //actual main
 int main(int argc, char** argv)
 {
     flags flag;
     node* head = create_link_with_string(argv[3]);
-    linked_list_initializer(argc, argv, head);=
+    linked_list_initializer(argc, argv, head);
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
     select_option(&flag, argv);
