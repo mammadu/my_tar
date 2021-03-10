@@ -8,15 +8,20 @@ void write_header(node* node, int fd)
     write(fd, HEADER_FINALE, 11);
 }
 
+void write_content(node* node, int fd)
+{
+    write(fd, node->file_contents, my_atoi_base(node->header->size, 8));
+
+}
+
 //write header and file content into the fd opened by create_archive
 int fill_archive(node* head, int fd)
 {
-    printf("HOLA MAMIS Y PAPIS");
     while( head != NULL)
     {
     write_header(head, fd); //debug tomorrow at work the position of next file 
-    //write the content
-    //write the end_of_file_nulls
+    write_content(head, fd);
+    
     head = head->next;
     }
     //close fd
