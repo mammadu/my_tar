@@ -25,6 +25,10 @@ node* create_link_with_string(char* string)
     close(fd);
     link->file_contents[size] = '\0';
 
+    int end_of_file_nulls_size = BLOCK_SIZE - (size % BLOCK_SIZE);
+    link->end_of_file_nulls = malloc((end_of_file_nulls_size + 1) * sizeof(char));
+    null_filler(link->end_of_file_nulls, end_of_file_nulls_size);
+
     link->next = NULL;
     return link;
 }
@@ -92,8 +96,9 @@ void free_linked_list(node* head)
     {
         temp = head;
         free(temp->string);
-        free(temp->file_contents);
         free(temp->header);
+        free(temp->file_contents);
+        free(temp->end_of_file_nulls);
         head = head->next;
         free(temp);
     }
