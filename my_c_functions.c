@@ -290,7 +290,10 @@ char* my_itoa_base(int value, int base)
 	char* base_string = "0123456789ABCDEF";
 
 	if (value == 0)
-		return ("0");
+    {
+        char* pointer = my_strdup("0");
+        return pointer;
+    }
 	len = 0;
 	nbr = value;
 	while (nbr) //this loop sets the length of the string

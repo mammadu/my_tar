@@ -126,15 +126,15 @@ void fill_size(int statsize, header* header)
         int statsize_buffer_len = my_strlen(statsize_buffer);
         char* zero_string = zero_filled_string(statsize_buffer_len, SIZE_LEN - 1);
         char* zero_buffer_combination= combine_strings(zero_string, statsize_buffer);
-        int i = 0;
 
+        int i = 0;
         while(zero_buffer_combination[i] != '\0')
         {
             header->size[i] = zero_buffer_combination[i];
             i += 1;
         }
         header->size[i] = '\0';
-
+                
         free(zero_buffer_combination);
         free(zero_string);
         free (statsize_buffer);

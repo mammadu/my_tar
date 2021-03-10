@@ -44,12 +44,13 @@ int fill_archive(node* head, int fd)
 {
     while( head != NULL)
     {
-    write_header(head, fd); //debug tomorrow at work the position of next file
-    if (head->header->typeflag != '1' || head->header->typeflag != '2')  //debug how to avoid writing content for link
-    {
-        write_content(head, fd);    
-    }
-    head = head->next;
+        write_header(head, fd); //debug tomorrow at work the position of next file
+        if (head->header->typeflag != '1' || head->header->typeflag != '2')  //debug how to avoid writing content for link
+        {
+            write_content(head, fd);
+            printf(" are we here\n");
+        }
+        head = head->next;
     }
     char* end = end_of_archive();
     write(fd, end, ARCHIVE_FINALE);

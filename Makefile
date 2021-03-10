@@ -17,6 +17,6 @@ clean:
 	rm *.o core.* *.tar
 
 fclean: main
-	rm $^
+	rm main header
 
 cleanall: fclean clean
