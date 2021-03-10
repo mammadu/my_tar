@@ -10,7 +10,6 @@ typedef struct node
     char* string;
     header* header;
     char* file_contents;
-    char* end_of_file_nulls;
     struct node* next;
 }node;
 
