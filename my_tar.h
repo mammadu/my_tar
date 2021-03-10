@@ -17,7 +17,7 @@
 #include "linked_list.h"
 #include "my_c_functions.h"
 #include "posix_header_filler.h"
-
+#define HEADER_FINALE "\0\0\0\0\0\0\0\0\0\0\0\0"
 
 //Struct to keep track of the passed flags
 
@@ -38,12 +38,12 @@ typedef struct flag_structs
 // Source: http://www.gnu.org/software/tar/manual/html_node/Blocking.html
 
 
-int create_archive(char* archive_name);
+int initilize_archive(char* archive_name);
 int check_existence(char* file_path);
 int check_permission(char* file_path);
 void flag_initializer(flags* my_flags);
 void flag_hunter(int argc, char* argv[], flags* my_flags);
-void select_option(flags* my_flags, char* argv[]);
+void select_option(flags* my_flags, char* archive_name ,node* head);
 void linked_list_initializer(int nodes_qty, char** argv, node* head);
 
 #endif

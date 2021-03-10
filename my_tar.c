@@ -1,7 +1,29 @@
 #include "my_tar.h"
 
 //This is option C
-int create_archive(char* archive_name)
+
+void write_header(node* node, int fd)
+{
+    write(fd, node->header->name, 500);
+    write(fd, HEADER_FINALE, 11);
+}
+
+//write header and file content into the fd opened by create_archive
+int fill_archive(node* head, int fd)
+{
+    printf("HOLA MAMIS Y PAPIS");
+    while( head != NULL)
+    {
+    write_header(head, fd); //debug tomorrow at work the position of next file 
+    //write the content
+    //write the end_of_file_nulls
+    head = head->next;
+    }
+    //close fd
+}
+
+//returns the file descriptor after checking for existance and permissions.
+int initilize_archive(char* archive_name)
 {
     int existence = check_existence(archive_name);
     if (existence == 0)
@@ -9,11 +31,8 @@ int create_archive(char* archive_name)
         int permission = check_permission(archive_name);
         if (permission == 7 || permission == 6 || permission == 3 || permission == 2)
         {
-            //make_archive(archive_name);
             int fd = open(archive_name, O_RDWR | O_CREAT, S_IRWXU);
-            
-
-            printf("make archive\n");
+            return fd;
         }
         else
         {
@@ -23,12 +42,10 @@ int create_archive(char* archive_name)
     }
     else
     {
-        //make_archive(archive_name);
-        printf("make archive\n");
+        int fd = open(archive_name, O_RDWR | O_CREAT, S_IRWXU);
+        return fd;
     }
 }
-
-
 
 //Checks for file existence. 0 means the file exists, -1 means the file doesn't exist.
 int check_existence(char* file_path)
@@ -111,8 +128,7 @@ void flag_hunter(int argc, char* argv[], flags* my_flags)
     }
 }
 
-
-void select_option(flags* my_flags, char* argv[])
+void select_option(flags* my_flags, char* archive_name ,node* head)
 {   
     int flag_sum = my_flags->c + my_flags->x + my_flags->t + my_flags->u + my_flags->r + my_flags->f;
 
@@ -123,7 +139,8 @@ void select_option(flags* my_flags, char* argv[])
     }
     else if (flag_sum == 2 && my_flags->c > 0)
     {
-        printf("Run option c please\n");//option_c
+        int fd = initilize_archive(archive_name);
+        fill_archive(head, fd);
     }
     else if(flag_sum == 2 && my_flags->x > 0)
     {
@@ -174,7 +191,8 @@ int main(int argc, char** argv)
     linked_list_initializer(argc, argv, head);
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
-    select_option(&flag, argv);
+    select_option(&flag, argv[2], head);
+    //void select_option(flags* my_flags, char* archive_name ,node* head)
     free_linked_list(head);
     return 0;
 }
