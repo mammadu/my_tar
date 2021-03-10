@@ -1,7 +1,5 @@
 #include "my_tar.h"
 
-// #include "posix_header_filler.h"
-
 //This is option C
 int create_archive(char* archive_name)
 {
@@ -12,11 +10,15 @@ int create_archive(char* archive_name)
         if (permission == 7 || permission == 6 || permission == 3 || permission == 2)
         {
             //make_archive(archive_name);
+            int fd = open(archive_name, O_RDWR | O_CREAT, S_IRWXU);
+            
+
             printf("make archive\n");
         }
         else
         {
             printf("can't overwrite archive\n");
+            return -1;
         }
     }
     else
@@ -146,7 +148,7 @@ void select_option(flags* my_flags, char* argv[])
     else
     {
         printf("You are doing something extremely wrong curb your expectations");
-    } 
+    }
 }
 
 //Linked list implementation
@@ -174,5 +176,5 @@ int main(int argc, char** argv)
     flag_hunter(argc, argv, &flag);
     select_option(&flag, argv);
     free_linked_list(head);
-    return 0;    
+    return 0;
 }
