@@ -8,10 +8,35 @@ void write_header(node* node, int fd)
     write(fd, HEADER_FINALE, 11);
 }
 
+int end_of_file_nulls_size(int file_size)
+{
+    int number_of_nulls = BLOCK_SIZE - (file_size % BLOCK_SIZE);
+    return number_of_nulls;
+}
+
+char* end_of_file_nulls(int file_size)
+{
+    int number_of_nulls = end_of_file_nulls_size(file_size);
+    char* null_ending = malloc((number_of_nulls) * sizeof(char));
+    null_filler(null_ending, number_of_nulls);
+    return null_ending;
+}
+
+char* end_of_archive()
+{
+    char* end = malloc(ARCHIVE_FINALE * sizeof(char));
+    null_filler(end, ARCHIVE_FINALE);
+    return end;
+}
+
 void write_content(node* node, int fd)
 {
-    write(fd, node->file_contents, my_atoi_base(node->header->size, 8));
-
+    int size = my_atoi_base(node->header->size, 8);
+    write(fd, node->file_contents, size);
+    int number_of_nulls = end_of_file_nulls_size(size);
+    char* end = end_of_file_nulls(size);
+    write(fd, end, number_of_nulls);
+    free(end);
 }
 
 //write header and file content into the fd opened by create_archive
@@ -19,12 +44,17 @@ int fill_archive(node* head, int fd)
 {
     while( head != NULL)
     {
-    write_header(head, fd); //debug tomorrow at work the position of next file 
-    write_content(head, fd);
-    
+    write_header(head, fd); //debug tomorrow at work the position of next file
+    if (head->header->typeflag != '1' || head->header->typeflag != '2')  //debug how to avoid writing content for link
+    {
+        write_content(head, fd);    
+    }
     head = head->next;
     }
-    //close fd
+    char* end = end_of_archive();
+    write(fd, end, ARCHIVE_FINALE);
+    close(fd);
+    free(end);
 }
 
 //returns the file descriptor after checking for existance and permissions.
@@ -36,7 +66,7 @@ int initilize_archive(char* archive_name)
         int permission = check_permission(archive_name);
         if (permission == 7 || permission == 6 || permission == 3 || permission == 2)
         {
-            int fd = open(archive_name, O_RDWR | O_CREAT, S_IRWXU);
+            int fd = open(archive_name, O_RDWR | O_CREAT, S_IRWXU);//debug how to remove old archive to write a fresh archive
             return fd;
         }
         else
@@ -188,13 +218,7 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
     }
 }
 
-char* end_of_file_nulls(int file_size)
-{
-    int end_of_file_nulls_size = BLOCK_SIZE - (file_size % BLOCK_SIZE);
-    char* end_of_file_nulls = malloc((end_of_file_nulls_size) * sizeof(char));
-    null_filler(end_of_file_nulls, end_of_file_nulls_size);
-    return end_of_file_nulls;
-}
+
 
 //actual main
 int main(int argc, char** argv)

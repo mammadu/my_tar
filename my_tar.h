@@ -18,6 +18,7 @@
 #include "my_c_functions.h"
 #include "posix_header_filler.h"
 #define HEADER_FINALE "\0\0\0\0\0\0\0\0\0\0\0\0"
+#define ARCHIVE_FINALE (1024)
 
 //Struct to keep track of the passed flags
 
