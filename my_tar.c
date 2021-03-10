@@ -183,6 +183,14 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
     }
 }
 
+char* end_of_file_nulls(int file_size)
+{
+    int end_of_file_nulls_size = BLOCK_SIZE - (file_size % BLOCK_SIZE);
+    char* end_of_file_nulls = malloc((end_of_file_nulls_size) * sizeof(char));
+    null_filler(end_of_file_nulls, end_of_file_nulls_size);
+    return end_of_file_nulls;
+}
+
 //actual main
 int main(int argc, char** argv)
 {

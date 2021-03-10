@@ -92,8 +92,8 @@ void free_linked_list(node* head)
     {
         temp = head;
         free(temp->string);
-        free(temp->file_contents);
         free(temp->header);
+        free(temp->file_contents);
         head = head->next;
         free(temp);
     }
