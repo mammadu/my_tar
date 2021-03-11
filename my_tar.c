@@ -45,10 +45,10 @@ int fill_archive(node* head, int fd)
     while( head != NULL)
     {
         write_header(head, fd); //debug tomorrow at work the position of next file
-        if (head->header->typeflag != '1' || head->header->typeflag != '2')  //debug how to avoid writing content for link
+        if (head->header->typeflag != '1' && head->header->typeflag != '2')
         {
             write_content(head, fd);
-            printf(" are we here\n");
+            printf("head->header->typeflag = %c\n", head->header->typeflag);
         }
         head = head->next;
     }

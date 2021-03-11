@@ -16,7 +16,7 @@ header: posix_header_filler.o my_c_functions.o
 clean:
 	rm *.o core.* *.tar
 
-fclean: main
+fclean:
 	rm main header
 
-cleanall: fclean clean
+cleanall: clean fclean
