@@ -5,7 +5,7 @@
 void write_header(node* node, int fd)
 {
     write(fd, node->header->name, 500);
-    write(fd, HEADER_FINALE, 11);
+    write(fd, HEADER_FINALE, 12);
 }
 
 int end_of_file_nulls_size(int file_size)
@@ -48,7 +48,6 @@ int fill_archive(node* head, int fd)
         if (head->header->typeflag != '1' && head->header->typeflag != '2')
         {
             write_content(head, fd);
-            printf("head->header->typeflag = %c\n", head->header->typeflag);
         }
         head = head->next;
     }
@@ -67,7 +66,7 @@ int initilize_archive(char* archive_name)
         int permission = check_permission(archive_name);
         if (permission == 7 || permission == 6 || permission == 3 || permission == 2)
         {
-            int fd = open(archive_name, O_RDWR | O_CREAT, S_IRWXU);//debug how to remove old archive to write a fresh archive
+            int fd = open(archive_name, O_RDWR | O_CREAT | O_TRUNC, S_IRWXU); //debug how to open files. Perhaps use check existance function????
             return fd;
         }
         else
