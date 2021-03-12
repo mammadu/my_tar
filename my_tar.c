@@ -39,8 +39,10 @@ void write_content(node* node, int fd)
     free(end);
 }
 
+
+
 //write header and file content into the fd opened by create_archive
-int fill_archive(node* head, int fd)
+void fill_archive(node* head, int fd)
 {
     while( head != NULL)
     {
@@ -205,6 +207,27 @@ void select_option(flags* my_flags, char* archive_name ,node* head)
 
 //Linked list implementation
 
+node* make_directory_list(node* head)
+{
+    DIR *folder;
+    folder = opendir(head->header->name);
+    struct dirent *entry;
+    while( (entry=readdir(folder)) )
+    {
+        char* path = combine_strings(head->string, "/");
+        path = combine_strings(path, entry->d_name);
+        printf("path = %s\n", path);
+        node* temp = create_link_with_string(path);
+        append_link(temp, head);
+        head = temp;
+        if (head->header->typeflag == '5')
+        {
+            head = make_directory_list(head->next);
+        }
+    }
+    return head;
+}
+
 void linked_list_initializer(int nodes_qty, char** argv, node* head)
 {
     int i = 4;
@@ -212,6 +235,10 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
     while(i < nodes_qty)
     {
         node* temp = create_link_with_string(argv[i]);
+        if (temp->header->typeflag == '5')
+        {
+            temp = make_directory_list(temp);
+        }
         head->next = temp;
         head = head->next;
         i += 1;

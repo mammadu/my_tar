@@ -14,6 +14,7 @@
 #include <sys/sysmacros.h>
 #include <pwd.h>
 #include <grp.h>
+#include <dirent.h>
 #include "linked_list.h"
 #include "my_c_functions.h"
 #include "posix_header_filler.h"
