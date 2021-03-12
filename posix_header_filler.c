@@ -216,6 +216,8 @@ void fill_typeflag(struct stat statbuf, header* header)
     else if (S_ISDIR(statbuf.st_mode))
     {
         header->typeflag = '5';
+        header->name[my_strlen(header->name)] = '/';
+        header->name[my_strlen(header->name) + 1] = '\0';
     }
     else if (S_ISFIFO(statbuf.st_mode))
     {
