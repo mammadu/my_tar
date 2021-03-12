@@ -31,20 +31,21 @@ void fill_name(char* file_path, header* header)
 void fill_mode(int statmode, header* header)
 {
     char* itoa_buffer = my_itoa_base(statmode, 8);
-    int i = 3;
-    int j = 4;
+    int mode_len = my_strlen(itoa_buffer) - 3;
+    int i = 4;
+
     header->mode[0] = '0';
     header->mode[1] = '0';
     header->mode[2] = '0';
     header->mode[3] = '0';
-    while(itoa_buffer[i])
+
+    while(itoa_buffer[mode_len] != '\0')
     {
-        header->mode[j] = itoa_buffer[i];
+         header->mode[i] = itoa_buffer[mode_len];
+        mode_len += 1;
         i += 1;
-        j += 1;
     }
-    header->mode[j] = '\0';
-   
+
     free(itoa_buffer);
 }
 
@@ -371,21 +372,21 @@ void fill_header(char* file_path, header* header)
     fill_chksum(header); //It needs to be the last filler function to be called 
 }
 
-// int main()
-// {
-//     header* my_header = malloc(sizeof(header));
-//     printf("enter name of file or directory\n");
-//     char* file_path = malloc(100);
-//     scanf("%s", file_path);
-//     fill_header(file_path, my_header);
-//     int fd = open("test.tar", O_RDWR | O_CREAT, S_IRWXU);
-//     printf("fd = %d\n", fd);
-//     int bytes_written = write(fd, my_header, sizeof(header));
-//     printf("number of bytes written is = %d\n", bytes_written);
-//     printf("errno = %d\n", errno);
-//     close(fd);
+int main()
+{
+    header* my_header = malloc(sizeof(header));
+    printf("enter name of file or directory\n");
+    char* file_path = malloc(100);
+    scanf("%s", file_path);
+    fill_header(file_path, my_header);
+    int fd = open("test.tar", O_RDWR | O_CREAT, S_IRWXU);
+    printf("fd = %d\n", fd);
+    int bytes_written = write(fd, my_header, sizeof(header));
+    printf("number of bytes written is = %d\n", bytes_written);
+    printf("errno = %d\n", errno);
+    close(fd);
 
-//     free(file_path);
-//     free(my_header);
-//     return 0;
-// }
+    free(file_path);
+    free(my_header);
+    return 0;
+}
