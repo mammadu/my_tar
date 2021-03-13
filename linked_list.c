@@ -22,6 +22,7 @@ node* create_link_with_string(char* string)
     link->file_contents = malloc((size + 1) * sizeof(char));
     int fd = open(link->string, O_RDONLY);
     int bytes_read = read(fd, link->file_contents, size); //bytes read should equal size on a successful read
+    printf("bytes_read = %d\n", bytes_read);
     close(fd);
     link->file_contents[size] = '\0';
 
@@ -72,7 +73,7 @@ int read_list(node* head)
     while (head != NULL)
     {
         index++;
-        printf("%s\n", head->file_contents);
+        printf("%s\n", head->string);
         head = head->next;
     }
     return index;

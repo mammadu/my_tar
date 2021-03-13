@@ -20,3 +20,7 @@ fclean:
 	rm main header
 
 cleanall: clean fclean
+
+test: main
+	tar -cf archivetar.tar link dir0 empy Makefile
+	./main -cf archive1.tar link dir0 empy Makefile

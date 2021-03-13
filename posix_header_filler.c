@@ -111,7 +111,7 @@ char* zero_filled_string(int len, int field_size) //field size is 1 less than th
 
 void fill_size(int statsize, header* header)
 {
-    if (header->typeflag == '1' || header->typeflag == '2')
+    if (header->typeflag == '1' || header->typeflag == '2' || header->typeflag == '5')
     {
         int i = 0;
         while (i < SIZE_LEN - 1)
@@ -371,8 +371,7 @@ void fill_header(char* file_path, header* header)
     fill_devmajor(statbuf.st_rdev, header);
     fill_devminor(statbuf.st_rdev, header);
 
-    fill_chksum(header); //It needs to be the last filler function to be called 
-    printf("header->typeflag = %c\n", header->typeflag);
+    fill_chksum(header); //It needs to be the last filler function to be called
 }
 
 // int main()

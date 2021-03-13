@@ -47,7 +47,7 @@ void fill_archive(node* head, int fd)
     while( head != NULL)
     {
         write_header(head, fd); //debug tomorrow at work the position of next file
-        if (head->header->typeflag != '1' && head->header->typeflag != '2')
+        if (head->header->typeflag != '1' && head->header->typeflag != '2' && head->header->typeflag != '5')
         {
             write_content(head, fd);
         }
@@ -212,19 +212,33 @@ node* make_directory_list(node* head)
     DIR *folder;
     folder = opendir(head->header->name);
     struct dirent *entry;
-    while( (entry=readdir(folder)) )
+    entry=readdir(folder);
+    char* root_directory = head->string;
+    while( (entry=readdir(folder)) ) //while there is a file entry
     {
-        char* path = combine_strings(head->string, "/");
-        path = combine_strings(path, entry->d_name);
-        printf("path = %s\n", path);
-        node* temp = create_link_with_string(path);
-        append_link(temp, head);
-        head = temp;
-        if (head->header->typeflag == '5')
+        if (entry->d_name[0] == '.' && entry->d_name[1] == '\0')
         {
-            head = make_directory_list(head->next);
+            continue;
+        }
+        else
+        {
+            char* path = combine_strings(root_directory, "/");
+            path = combine_strings(path, entry->d_name); //path is the total path to the directory item.
+                printf("path = %s\n", path);
+            node* temp = create_link_with_string(path);
+            printf("temp->string = %s\n", temp->string);
+            append_link(temp, head);
+            head = temp;
+            free(temp);
+            if (head->header->typeflag == '5')
+            {
+                head = head->next;
+                head = make_directory_list(head->next);
+            }
         }
     }
+
+    closedir(folder);
     return head;
 }
 
@@ -235,6 +249,7 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
     while(i < nodes_qty)
     {
         node* temp = create_link_with_string(argv[i]);
+        printf("temp->header->name = %s ||| temp->header->typeflag = %c\n", temp->header->name, temp->header->typeflag);
         if (temp->header->typeflag == '5')
         {
             temp = make_directory_list(temp);
@@ -252,11 +267,13 @@ int main(int argc, char** argv)
 {
     flags flag;
     node* head = create_link_with_string(argv[3]);
+    printf("head->header->name = %s ||| head->header->typeflag = %c\n", head->header->name, head->header->typeflag);
     linked_list_initializer(argc, argv, head);
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
     select_option(&flag, argv[2], head);
     //void select_option(flags* my_flags, char* archive_name ,node* head)
+    read_list(head);
     free_linked_list(head);
     return 0;
 }
