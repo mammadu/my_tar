@@ -58,7 +58,7 @@ int fill_archive(node* head, int fd)
 }
 
 //returns the file descriptor after checking for existance and permissions.
-int initilize_archive(char* archive_name)
+int initilize_archive_write(char* archive_name)
 {
     int existence = check_existence(archive_name);
     if (existence == 0)
@@ -79,6 +79,31 @@ int initilize_archive(char* archive_name)
     {
         int fd = open(archive_name, O_RDWR | O_CREAT, S_IRWXU);
         return fd;
+    }
+}
+
+//returns the file descriptor after checking for existance and permissions.
+int initilize_archive_read(char* archive_name)
+{
+    int existence = check_existence(archive_name);
+    if (existence == 0)
+    {
+        int permission = check_permission(archive_name);
+        if (permission == 7 || permission == 6 || permission == 5 || permission == 4)
+        {
+            int fd = open(archive_name, O_RDONLY); //debug how to open files. Perhaps use check existance function????
+            return fd;
+        }
+        else
+        {
+            printf("can't overwrite archive\n");
+            return -1;
+        }
+    }
+    else
+    {
+        printf("Archive does not exist\n");
+        return -2;
     }
 }
 
@@ -174,7 +199,7 @@ void select_option(flags* my_flags, char* archive_name ,node* head)
     }
     else if (flag_sum == 2 && my_flags->c > 0)
     {
-        int fd = initilize_archive(archive_name);
+        int fd = initilize_archive_write(archive_name);
         fill_archive(head, fd);
     }
     else if(flag_sum == 2 && my_flags->x > 0)
@@ -224,10 +249,10 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
 int main(int argc, char** argv)
 {
     flags flag;
-    node* head = create_link_with_string(argv[3]);
-    linked_list_initializer(argc, argv, head);
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
+    node* head = create_link_with_string(argv[3]);
+    linked_list_initializer(argc, argv, head);
     select_option(&flag, argv[2], head);
     //void select_option(flags* my_flags, char* archive_name ,node* head)
     free_linked_list(head);

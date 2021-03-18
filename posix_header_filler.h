@@ -1,7 +1,6 @@
 #ifndef posix_header_filler_H
 #define posix_header_filler_H
 
-#include "my_c_functions.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -12,6 +11,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+
+#include "my_c_functions.h"
 
 
 # define BLOCK_SIZE	(512)
