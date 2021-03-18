@@ -10,6 +10,13 @@ main: my_tar.o my_c_functions.o posix_header_filler.o linked_list.o
 header: posix_header_filler.o my_c_functions.o
 	${CC} -o $@ $^ ${CFLAGS_MEM}
 
+parser: archive_parser.o my_c_functions.o posix_header_filler.o linked_list.o
+	${CC} -o $@ $^ ${CFLAGS_MEM}
+
+test: main parser
+	./main -cf archive.tar a
+	./parser -xf archive.tar
+
 %.o: %.c %.h
 	${CC} -c $<
 
@@ -17,6 +24,6 @@ clean:
 	rm *.o core.* *.tar
 
 fclean:
-	rm main header
+	rm main header parser
 
 cleanall: clean fclean
