@@ -9,7 +9,7 @@
 
 #include "archive_parser.h"
 //#include "my_tar.h"
-#include "my_c_functions.c"
+// #include "my_c_functions.c"
 
 //checks for data different from Null '\0',
 //returns exact position of first data encounter
@@ -83,6 +83,7 @@ node* fill_link(int fd)
     link->header = malloc(sizeof(header));
     int header_bytes_read = read(fd, link->header, HEADER_SIZE);
 
+
     link->string = my_strdup(link->header->name);
 
     int size = my_atoi_base(link->header->size, 8);
@@ -105,11 +106,17 @@ int main(int argc, char** argv)
     int fd = initilize_archive_read(argv[2]);
     node* head = fill_link(fd);
     //int end_of_archive = lseek(fd, 0, SEEK_END);
-    int current = lseek(fd, 0, SEEK_CUR);
-
     // printf("previous = %d,  next data to read = %d", current ,data_seeker(fd, current));
+    int current = 0;
+    
+    while ( (current = data_seeker(fd, current)) > 0)
+    {
+        node* temp = fill_link(fd);
+        append_link(temp, head);
+    }
 
-    free(head);
+
+    free_linked_list(head);
     close(fd);
     return 0;
     // while()
