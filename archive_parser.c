@@ -25,7 +25,8 @@ int data_seeker(int fd, int current)
         current +=1;
         if (c != '\0') 
         {
-            //printf("%c \n", c);
+            seek = lseek(fd, -1, SEEK_CUR);
+            current -=1;
             return current;
         }
     }
@@ -98,8 +99,6 @@ node* fill_link(int fd)
 }
 
 
-//tar -xf archive.tar
-
 
 int main(int argc, char** argv)
 {
@@ -107,17 +106,23 @@ int main(int argc, char** argv)
     node* head = fill_link(fd);
     //int end_of_archive = lseek(fd, 0, SEEK_END);
     // printf("previous = %d,  next data to read = %d", current ,data_seeker(fd, current));
-    int current = 0;
+    int current_position = lseek(fd, 0, SEEK_CUR);
     
-    while ( (current = data_seeker(fd, current)) > 0)
+    while (data_seeker(fd, current_position) > 0)
     {
+        // current_position = lseek(fd, -1, SEEK_CUR);
         node* temp = fill_link(fd);
         append_link(temp, head);
+        current_position = lseek(fd, 0, SEEK_CUR);
     }
+
+    int links = read_list(head);
 
 
     free_linked_list(head);
     close(fd);
+
+
+    
     return 0;
-    // while()
 }

@@ -14,7 +14,7 @@ parser: archive_parser.o my_c_functions.o posix_header_filler.o linked_list.o
 	${CC} -o $@ $^ ${CFLAGS_MEM}
 
 test: main parser
-	./main -cf archive.tar a
+	./main -cf archive.tar a b c 
 	./parser -xf archive.tar
 
 %.o: %.c %.h
