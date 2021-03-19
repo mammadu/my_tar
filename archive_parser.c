@@ -1,7 +1,11 @@
-/*TO DO
+/*
+
+DONE
 
 1. To create linked list, we can pass head and lseek(current) @ head
 2. To Fill linked list until data_seeker == 0
+
+TO DO
 3. Loop trough linked list and create files.
 
 */
@@ -11,7 +15,7 @@
 //#include "my_tar.h"
 // #include "my_c_functions.c"
 
-//checks for data different from Null '\0',
+//Checks for data different to Null '\0',
 //returns exact position of first data encounter
 //or end of file
 int data_seeker(int fd, int current)
@@ -76,7 +80,8 @@ int initilize_archive_read(char* archive_name)
     }
 }
 
-//creates a link. Reads from FD. Fills the string name, file contents, and points to null for next link
+//Creates a link. Reads from FD. 
+//Fills the string name, file contents, and points to null for next link
 node* fill_link(int fd)
 {
     //read string name, header, file contents,
@@ -98,7 +103,19 @@ node* fill_link(int fd)
     link->next = NULL;
 }
 
-
+int file_creator_from_list(node* head)
+{  
+    int index = 0;
+    while (head != NULL)
+    {
+        index += 1;
+        int fd = open(head->string, O_RDWR | O_CREAT | O_TRUNC, S_IRWXU);
+        write(fd, head->file_contents, my_atoi_base(head->header->size, 8));
+        close(fd);
+        head = head->next;
+    }
+    return index;
+}
 
 int main(int argc, char** argv)
 {
@@ -116,8 +133,8 @@ int main(int argc, char** argv)
         current_position = lseek(fd, 0, SEEK_CUR);
     }
 
-    int links = read_list(head);
-
+    //int links = read_list(head);
+    file_creator_from_list(head);
 
     free_linked_list(head);
     close(fd);
