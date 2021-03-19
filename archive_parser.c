@@ -1,10 +1,19 @@
+/*TO DO
+
+1. To create linked list, we can pass head and lseek(current) @ head
+2. To Fill linked list until data_seeker == 0
+3. Loop trough linked list and create files.
+
+*/
+
+
 #include "archive_parser.h"
-#include "my_tar.h"
+//#include "my_tar.h"
 #include "my_c_functions.c"
 
 //checks for data different from Null '\0',
 //returns exact position of first data encounter
-//return -1 if data is not found (? Maybe ?)
+//or end of file
 int data_seeker(int fd, int current)
 {
     char c;
@@ -16,11 +25,13 @@ int data_seeker(int fd, int current)
         current +=1;
         if (c != '\0') 
         {
-            printf("%c", c);
+            //printf("%c \n", c);
             return current;
         }
     }
-    return -1;
+    //-1 -> It can't read archive
+    //0 -> reaches endo of file
+    return bytes;
 }
 
 int check_existence(char* file_path)
@@ -87,14 +98,16 @@ node* fill_link(int fd)
 
 
 //tar -xf archive.tar
+
+
 int main(int argc, char** argv)
 {
     int fd = initilize_archive_read(argv[2]);
     node* head = fill_link(fd);
     //int end_of_archive = lseek(fd, 0, SEEK_END);
     int current = lseek(fd, 0, SEEK_CUR);
-    
-    printf("previous = %d,  next data to read = %d", current ,data_seeker(fd, current));
+
+    // printf("previous = %d,  next data to read = %d", current ,data_seeker(fd, current));
 
     free(head);
     close(fd);

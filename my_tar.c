@@ -204,6 +204,7 @@ void select_option(flags* my_flags, char* archive_name ,node* head)
     }
     else if(flag_sum == 2 && my_flags->x > 0)
     {
+        //working in the blueprint of this bad boy
         printf("Run option x please\n");//option_x
     }
     else if(flag_sum == 2 && my_flags->t > 0)
