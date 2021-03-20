@@ -14,7 +14,7 @@ parser: archive_parser.o my_c_functions.o posix_header_filler.o linked_list.o
 	${CC} -o $@ $^ ${CFLAGS_MEM}
 
 test: main parser
-	./main -cf archive.tar a b c 
+	./main -cf archive.tar dir0 link a b c 
 	./parser -xf archive.tar
 
 %.o: %.c %.h
@@ -24,6 +24,6 @@ clean:
 	rm *.o core.* *.tar
 
 fclean:
-	rm main header parser
+	rm -rf main header parser
 
-cleanall: clean fclean
+cleanall: fclean clean

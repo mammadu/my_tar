@@ -72,7 +72,7 @@ int read_list(node* head)
     while (head != NULL)
     {
         index++;
-        printf("%s\n", head->file_contents);
+        printf("%s\n", head->string);
         head = head->next;
     }
     return index;

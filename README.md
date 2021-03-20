@@ -10,4 +10,6 @@ https://www.mkssoftware.com/docs/man4/tar.4.asp
 
 
 TODO:
-review fill_contents, head_initializer, linked_list_initializer functions
+fill_prefix
+Check if an archive is actually an archive
+Check if all arguments for c option exist

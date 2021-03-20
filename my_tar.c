@@ -45,7 +45,7 @@ int fill_archive(node* head, int fd)
     while( head != NULL)
     {
         write_header(head, fd); //debug tomorrow at work the position of next file
-        if (head->header->typeflag != '1' && head->header->typeflag != '2'&& head->header->typeflag != '5')
+        if (head->header->typeflag != '1' && head->header->typeflag != '2' && head->header->typeflag != '5')
         {
             write_content(head, fd);
         }

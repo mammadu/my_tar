@@ -114,7 +114,7 @@ int file_creator_from_list(node* head)
         int mode = my_atoi_base(head->header->mode, 8);
         if (head->header->typeflag == '1' || head->header->typeflag == '2')
         {
-            int sym = symlink(head->header->linkname, head->string);            
+            int sym = symlink(head->header->linkname, head->string);
         }
         
         else if(head->header->typeflag == '5')
@@ -132,12 +132,10 @@ int file_creator_from_list(node* head)
     return index;
 }
 
-int main(int argc, char** argv)
+void extract_archive(int argc, char** argv)
 {
     int fd = initilize_archive_read(argv[2]);
     node* head = fill_link(fd);
-    //int end_of_archive = lseek(fd, 0, SEEK_END);
-    // printf("previous = %d,  next data to read = %d", current ,data_seeker(fd, current));
     int current_position = lseek(fd, 0, SEEK_CUR);
     
     //creates linked list of files from achive
@@ -154,6 +152,28 @@ int main(int argc, char** argv)
 
     free_linked_list(head);
     close(fd);
-    
-    return 0;
 }
+
+// int main(int argc, char** argv)
+// {
+//     int fd = initilize_archive_read(argv[2]);
+//     node* head = fill_link(fd);
+//     int current_position = lseek(fd, 0, SEEK_CUR);
+    
+//     //creates linked list of files from achive
+//     while (data_seeker(fd, current_position) > 0)
+//     {
+//         // current_position = lseek(fd, -1, SEEK_CUR);
+//         node* temp = fill_link(fd);
+//         append_link(temp, head);
+//         current_position = lseek(fd, 0, SEEK_CUR);
+//     }
+
+//     //creates files from linked list
+//     file_creator_from_list(head);
+
+//     free_linked_list(head);
+//     close(fd);
+    
+//     return 0;
+// }
