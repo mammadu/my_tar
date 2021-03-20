@@ -4,9 +4,11 @@ DONE
 
 1. To create linked list, we can pass head and lseek(current) @ head
 2. To Fill linked list until data_seeker == 0
+3. Loop trough linked list and create files.
 
 TO DO
-3. Loop trough linked list and create files.
+
+4. We need to define last actions
 
 */
 
