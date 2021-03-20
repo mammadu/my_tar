@@ -45,7 +45,7 @@ int check_existence(char* file_path);
 int check_permission(char* file_path);
 void flag_initializer(flags* my_flags);
 void flag_hunter(int argc, char* argv[], flags* my_flags);
-void select_option(flags* my_flags, char* archive_name ,node* head);
+void select_option(flags* my_flags, int argc, char** argv);
 void linked_list_initializer(int nodes_qty, char** argv, node* head);
 
 #endif

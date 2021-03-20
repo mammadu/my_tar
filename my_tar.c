@@ -188,7 +188,7 @@ void flag_hunter(int argc, char* argv[], flags* my_flags)
     }
 }
 
-void select_option(flags* my_flags, char* archive_name ,node* head)
+void select_option(flags* my_flags, int argc, char** argv)
 {   
     int flag_sum = my_flags->c + my_flags->x + my_flags->t + my_flags->u + my_flags->r + my_flags->f;
 
@@ -199,12 +199,15 @@ void select_option(flags* my_flags, char* archive_name ,node* head)
     }
     else if (flag_sum == 2 && my_flags->c > 0)
     {
-        int fd = initilize_archive_write(archive_name);
+        node* head = create_link_with_string(argv[3]);
+        linked_list_initializer(argc, argv, head);
+        int fd = initilize_archive_write(argv[2]);
         fill_archive(head, fd);
+        free_linked_list(head);
     }
     else if(flag_sum == 2 && my_flags->x > 0)
     {
-        extract_archive(archive_name);
+        extract_archive(argv[2]);
     }
     else if(flag_sum == 2 && my_flags->t > 0)
     {
@@ -243,28 +246,12 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
     }
 }
 
-
-
 //actual main
 int main(int argc, char** argv)
 {
     flags flag;
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
-     node* head;
-    if (argc > 3)
-    {
-        node* head = create_link_with_string(argv[3]);
-    }
-        
-    linked_list_initializer(argc, argv, head);
-    select_option(&flag, argv[2], head);
-    //void select_option(flags* my_flags, char* archive_name ,node* head)
-    if (argc > 3)
-    {
-        free_linked_list(head);
-    }
-    
-    
+    select_option(&flag, argc, argv);
     return 0;
 }
