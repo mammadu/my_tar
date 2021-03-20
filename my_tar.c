@@ -204,8 +204,7 @@ void select_option(flags* my_flags, char* archive_name ,node* head)
     }
     else if(flag_sum == 2 && my_flags->x > 0)
     {
-        //working in the blueprint of this bad boy
-        printf("Run option x please\n");//option_x
+        extract_archive(archive_name);
     }
     else if(flag_sum == 2 && my_flags->t > 0)
     {
@@ -252,10 +251,20 @@ int main(int argc, char** argv)
     flags flag;
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
-    node* head = create_link_with_string(argv[3]);
+     node* head;
+    if (argc > 3)
+    {
+        node* head = create_link_with_string(argv[3]);
+    }
+        
     linked_list_initializer(argc, argv, head);
     select_option(&flag, argv[2], head);
     //void select_option(flags* my_flags, char* archive_name ,node* head)
-    free_linked_list(head);
+    if (argc > 3)
+    {
+        free_linked_list(head);
+    }
+    
+    
     return 0;
 }

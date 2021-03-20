@@ -17,6 +17,7 @@
 #include "linked_list.h"
 #include "my_c_functions.h"
 #include "posix_header_filler.h"
+#include "archive_parser.h"
 #define HEADER_FINALE "\0\0\0\0\0\0\0\0\0\0\0"
 #define ARCHIVE_FINALE (1024)
 

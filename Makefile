@@ -4,7 +4,7 @@ CFLAGS_MEM = -Wall -Wextra -Werror -g3 -fsanitize=address
 
 all: main
 
-main: my_tar.o my_c_functions.o posix_header_filler.o linked_list.o
+main: my_tar.o my_c_functions.o posix_header_filler.o linked_list.o archive_parser.o
 	${CC} -o $@ $^ ${CFLAGS_MEM}
 
 header: posix_header_filler.o my_c_functions.o

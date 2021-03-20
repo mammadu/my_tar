@@ -1,21 +1,4 @@
-/*
-
-DONE
-
-1. To create linked list, we can pass head and lseek(current) @ head
-2. To Fill linked list until data_seeker == 0
-3. Loop trough linked list and create files.
-
-TO DO
-
-4. We need to define last actions
-
-*/
-
-
 #include "archive_parser.h"
-//#include "my_tar.h"
-// #include "my_c_functions.c"
 
 //Checks for data different to Null '\0',
 //returns exact position of first data encounter
@@ -41,46 +24,46 @@ int data_seeker(int fd, int current)
     return bytes;
 }
 
-int check_existence(char* file_path)
-{
-    struct stat statbuf;
-    int val = stat(file_path, &statbuf);
-    return val;
-}
+// int check_existence(char* file_path)
+// {
+//     struct stat statbuf;
+//     int val = stat(file_path, &statbuf);
+//     return val;
+// }
 
-int check_permission(char* file_path)
-{
-    struct stat statbuf;
-    int status = stat(file_path, &statbuf);
-    char* item_type_and_permissions = my_itoa_base(statbuf.st_mode, 8);
-    int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
-    free(item_type_and_permissions);
-    return permission;
-}
+// int check_permission(char* file_path)
+// {
+//     struct stat statbuf;
+//     int status = stat(file_path, &statbuf);
+//     char* item_type_and_permissions = my_itoa_base(statbuf.st_mode, 8);
+//     int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
+//     free(item_type_and_permissions);
+//     return permission;
+// }
 
-int initilize_archive_read(char* archive_name)
-{
-    int existence = check_existence(archive_name);
-    if (existence == 0)
-    {
-        int permission = check_permission(archive_name);
-        if (permission == 7 || permission == 6 || permission == 5 || permission == 4)
-        {
-            int fd = open(archive_name, O_RDONLY); //debug how to open files. Perhaps use check existance function????
-            return fd;
-        }
-        else
-        {
-            printf("can't overwrite archive\n");
-            return -1;
-        }
-    }
-    else
-    {
-        printf("Archive does not exist\n");
-        return -2;
-    }
-}
+// int initilize_archive_read(char* archive_name)
+// {
+//     int existence = check_existence(archive_name);
+//     if (existence == 0)
+//     {
+//         int permission = check_permission(archive_name);
+//         if (permission == 7 || permission == 6 || permission == 5 || permission == 4)
+//         {
+//             int fd = open(archive_name, O_RDONLY); //debug how to open files. Perhaps use check existance function????
+//             return fd;
+//         }
+//         else
+//         {
+//             printf("can't overwrite archive\n");
+//             return -1;
+//         }
+//     }
+//     else
+//     {
+//         printf("Archive does not exist\n");
+//         return -2;
+//     }
+// }
 
 //Creates a link. Reads from FD. 
 //Fills the string name, file contents, and points to null for next link
@@ -132,9 +115,9 @@ int file_creator_from_list(node* head)
     return index;
 }
 
-void extract_archive(int argc, char** argv)
+void extract_archive(char* archive_name)
 {
-    int fd = initilize_archive_read(argv[2]);
+    int fd = initilize_archive_read(archive_name);
     node* head = fill_link(fd);
     int current_position = lseek(fd, 0, SEEK_CUR);
     
