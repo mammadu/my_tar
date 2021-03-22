@@ -207,7 +207,17 @@ void select_option(flags* my_flags, int argc, char** argv)
     }
     else if(flag_sum == 2 && my_flags->x > 0)
     {
-        extract_archive(argv[2]);
+        if(check_existence(argv[2]) == 0)
+        {
+            extract_archive(argv[2]);
+        }
+        else 
+        {
+            my_putstr("my_tar: ");
+            my_putstr(argv[2]);
+            my_putstr(": Cannot open: No such file or directory\n");
+            my_putstr("my_tar: Error is not recoverable: exiting now\n");
+        }
     }
     else if(flag_sum == 2 && my_flags->t > 0)
     {
