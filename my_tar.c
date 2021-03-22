@@ -207,11 +207,21 @@ void select_option(flags* my_flags, int argc, char** argv)
     }
     else if(flag_sum == 2 && my_flags->x > 0)
     {
-        extract_archive(argv[2]);
+        if(check_existence(argv[2]) == 0)
+        {
+            extract_archive(argv[2]);
+        }
+        else 
+        {
+            my_putstr("my_tar: ");
+            my_putstr(argv[2]);
+            my_putstr(": Cannot open: No such file or directory\n");
+            my_putstr("my_tar: Error is not recoverable: exiting now\n");
+        }
     }
     else if(flag_sum == 2 && my_flags->t > 0)
     {
-        printf("Run option t please\n");//option_t
+        extract_archive_to_list(argv[2]);
     }   
     else if(flag_sum == 2 && my_flags->u > 0)
     {
@@ -221,10 +231,6 @@ void select_option(flags* my_flags, int argc, char** argv)
     {
         printf("Run option r please\n");//option_r
     }   
-    else if(flag_sum == 2 && my_flags->f > 0)
-    {
-        printf("Run option f please\n");//option_f
-    }
     else
     {
         printf("You are doing something extremely wrong curb your expectations");

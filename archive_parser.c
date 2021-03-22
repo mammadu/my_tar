@@ -115,6 +115,31 @@ int file_creator_from_list(node* head)
     return index;
 }
 
+void extract_archive_to_list(char* archive_name)
+{
+    int fd = initilize_archive_read(archive_name);
+    node* head = fill_link(fd);
+    int current_position = lseek(fd, 0, SEEK_CUR);
+    
+    //creates linked list of files from achive
+    archive_to_linked_list(fd, current_position, head);
+
+    read_list(head);
+    free_linked_list(head);
+    close(fd);
+}
+
+void archive_to_linked_list(int fd, int current_position, node* head)
+{
+     while (data_seeker(fd, current_position) > 0)
+    {
+        // current_position = lseek(fd, -1, SEEK_CUR);
+        node* temp = fill_link(fd);
+        append_link(temp, head);
+        current_position = lseek(fd, 0, SEEK_CUR);
+    }
+}
+
 void extract_archive(char* archive_name)
 {
     int fd = initilize_archive_read(archive_name);
@@ -122,13 +147,7 @@ void extract_archive(char* archive_name)
     int current_position = lseek(fd, 0, SEEK_CUR);
     
     //creates linked list of files from achive
-    while (data_seeker(fd, current_position) > 0)
-    {
-        // current_position = lseek(fd, -1, SEEK_CUR);
-        node* temp = fill_link(fd);
-        append_link(temp, head);
-        current_position = lseek(fd, 0, SEEK_CUR);
-    }
+    archive_to_linked_list(fd, current_position, head);
 
     //creates files from linked list
     file_creator_from_list(head);

@@ -72,7 +72,8 @@ int read_list(node* head)
     while (head != NULL)
     {
         index++;
-        printf("%s\n", head->string);
+        my_putstr(head->string);
+        my_putstr("\n");
         head = head->next;
     }
     return index;
