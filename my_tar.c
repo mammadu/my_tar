@@ -221,10 +221,6 @@ void select_option(flags* my_flags, int argc, char** argv)
     {
         printf("Run option r please\n");//option_r
     }   
-    else if(flag_sum == 2 && my_flags->f > 0)
-    {
-        printf("Run option f please\n");//option_f
-    }
     else
     {
         printf("You are doing something extremely wrong curb your expectations");
