@@ -239,9 +239,19 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
 
     while(i < nodes_qty)
     {
-        node* temp = create_link_with_string(argv[i]);
-        head->next = temp;
-        head = head->next;
+        if (check_existence(argv[i]) == 0)
+        {
+            node* temp = create_link_with_string(argv[i]);
+            head->next = temp;
+            head = head->next;
+        }
+        else
+        {
+            my_putstr("my_tar: ");
+            my_putstr(argv[i]);
+            my_putstr(": No such file or directory\n");
+        }
+        
         i += 1;
     }
 }
