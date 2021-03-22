@@ -24,6 +24,39 @@ int data_seeker(int fd, int current)
     return bytes;
 }
 
+int is_archive(char* file_path)
+{
+    int fd = open(file_path, O_RDONLY);
+    if (fd == -1)
+    {
+        my_putstr("tar: ");
+        my_putstr(file_path);
+        my_putstr(": Cannot open: Permission denied\n");
+        my_putstr("tar: Error is not recoverable: exiting now\n");
+        return -1;
+    }
+    else
+    {
+        header* head = malloc(sizeof(header));
+        read(fd, head, HEADER_SIZE);
+        int original_checksum = my_atoi_base(head->chksum, 8);
+        fill_chksum(head);
+        int new_checksum = my_atoi_base(head->chksum, 8);
+        free(head);
+        if (original_checksum == new_checksum)
+        {
+            return 0;
+        }
+        else
+        {
+            my_putstr("my_tar: This does not look like a tar archive\n");
+            my_putstr("my_tar: Skipping to next header\n");
+            my_putstr("my_tar: Exiting with failure status due to previous errors\n");
+            return -2;
+        }
+    }
+}
+
 // int check_existence(char* file_path)
 // {
 //     struct stat statbuf;

@@ -209,7 +209,10 @@ void select_option(flags* my_flags, int argc, char** argv)
     {
         if(check_existence(argv[2]) == 0)
         {
-            extract_archive(argv[2]);
+            if (is_archive(argv[2]) == 0)
+            {
+                extract_archive(argv[2]);
+            }
         }
         else 
         {
