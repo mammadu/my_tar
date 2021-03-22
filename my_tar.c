@@ -211,7 +211,7 @@ void select_option(flags* my_flags, int argc, char** argv)
     }
     else if(flag_sum == 2 && my_flags->t > 0)
     {
-        printf("Run option t please\n");//option_t
+        extract_archive_to_list(argv[2]);
     }   
     else if(flag_sum == 2 && my_flags->u > 0)
     {
