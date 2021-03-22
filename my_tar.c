@@ -194,7 +194,7 @@ void select_option(flags* my_flags, int argc, char** argv)
 
     if (my_flags->f < 1)
     {
-        printf("You need -f to run my_tar my_dude\n");
+        my_putstr("Refusing to implement archive contents to terminal (missing -f option?)");
         return;
     }
     else if (flag_sum == 2 && my_flags->c > 0)
@@ -224,7 +224,20 @@ void select_option(flags* my_flags, int argc, char** argv)
     }
     else if(flag_sum == 2 && my_flags->t > 0)
     {
-        extract_archive_to_list(argv[2]);
+        if(check_existence(argv[2]) == 0)
+        {
+            if (is_archive(argv[2]) == 0)
+            {
+                extract_archive_to_list(argv[2]);
+            }
+        }
+        else 
+        {
+            my_putstr("my_tar: ");
+            my_putstr(argv[2]);
+            my_putstr(": Cannot open: No such file or directory\n");
+            my_putstr("my_tar: Error is not recoverable: exiting now\n");
+        }
     }   
     else if(flag_sum == 2 && my_flags->u > 0)
     {

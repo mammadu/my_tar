@@ -24,6 +24,19 @@ int data_seeker(int fd, int current)
     return bytes;
 }
 
+//returns the sum of all the characters in a string
+int string_byte_sum(char* str, int str_len)
+{
+    int i = 0;
+    int sum = 0;
+    while (i < str_len)
+    {
+        sum = sum + str[i];
+        i++;
+    }
+    return sum;
+}
+
 int is_archive(char* file_path)
 {
     int fd = open(file_path, O_RDONLY);
@@ -39,11 +52,13 @@ int is_archive(char* file_path)
     {
         header* head = malloc(sizeof(header));
         read(fd, head, HEADER_SIZE);
+        int checksum_byte_sum = string_byte_sum(head->chksum, CHKSUM_LEN); //sum of bytes in checksum field
         int original_checksum = my_atoi_base(head->chksum, 8);
         fill_chksum(head);
-        int new_checksum = my_atoi_base(head->chksum, 8);
+        int new_checksum = my_atoi_base(head->chksum, 8); 
         free(head);
-        if (original_checksum == new_checksum)
+        //we subtract checksum_byte_sum because fill_chksum works assuming the chksum field is only nulls
+        if (original_checksum == (new_checksum - checksum_byte_sum))
         {
             return 0;
         }
