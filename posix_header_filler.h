@@ -34,6 +34,23 @@
 # define DEVMINOR_LEN (8)
 # define PREFIX_LEN (155)
 
+# define NAME_OFFSET (0)
+# define MODE_OFFSET (100)
+# define UID_OFFSET (108)
+# define GID_OFFSET (116)
+# define SIZE_OFFSET (124)
+# define MTIME_OFFSET (136)
+# define CHKSUM_OFFSET (148)
+# define TYPEFLAG_OFFSET (156)
+# define LINKNAME_OFFSET (157)
+# define MAGIC_OFFSET (257)
+# define VERSION_OFFSET (263)
+# define UNAME_OFFSET (265)
+# define GNAME_OFFSET (297)
+# define DEVMAJOR_OFFSET (329)
+# define DEVMINOR_OFFSET (337)
+# define PREFIX_OFFSET (345)
+
 //Metadata header for collection of file data 
 
 typedef struct posix_header

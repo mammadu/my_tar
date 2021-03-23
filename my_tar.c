@@ -1,7 +1,5 @@
 #include "my_tar.h"
 
-//This is option C
-
 void write_header(node* node, int fd)
 {
     write(fd, node->header->name, 500);
