@@ -204,6 +204,20 @@ void extract_archive(char* archive_name)
     close(fd);
 }
 
+node* extract_archive_to_node(char* archive_name, node* head, int fd)
+{    
+    head = fill_link(fd);
+    int current_position = lseek(fd, 0, SEEK_CUR);
+    
+    //creates linked list of files from achive
+    archive_to_linked_list(fd, current_position, head);
+
+    //creates files from linked list
+    file_creator_from_list(head);
+
+    return head;
+}
+
 // int main(int argc, char** argv)
 // {
 //     int fd = initilize_archive_read(argv[2]);

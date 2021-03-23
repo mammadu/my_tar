@@ -194,11 +194,12 @@ void select_option(flags* my_flags, int argc, char** argv)
 
     if (my_flags->f < 1)
     {
-        my_putstr("Refusing to implement archive contents to terminal (missing -f option?)");
+        printf("You need -f to run my_tar my_dude\n");
         return;
     }
     else if (flag_sum == 2 && my_flags->c > 0)
     {
+        //We need to check if argv[3] exist :/
         node* head = create_link_with_string(argv[3]);
         linked_list_initializer(argc, argv, head);
         int fd = initilize_archive_write(argv[2]);
@@ -209,10 +210,7 @@ void select_option(flags* my_flags, int argc, char** argv)
     {
         if(check_existence(argv[2]) == 0)
         {
-            if (is_archive(argv[2]) == 0)
-            {
-                extract_archive(argv[2]);
-            }
+            extract_archive(argv[2]);
         }
         else 
         {
@@ -224,12 +222,30 @@ void select_option(flags* my_flags, int argc, char** argv)
     }
     else if(flag_sum == 2 && my_flags->t > 0)
     {
+        extract_archive_to_list(argv[2]);
+    }   
+    else if(flag_sum == 2 && my_flags->u > 0)
+    {
+        printf("Run option u please\n");//option_u
+    }
+    else if(flag_sum == 2 && my_flags->r > 0)
+    {
         if(check_existence(argv[2]) == 0)
         {
-            if (is_archive(argv[2]) == 0)
-            {
-                extract_archive_to_list(argv[2]);
-            }
+            //option_r
+            int fd = initilize_archive_read(argv[2]);
+            node* head_x = extract_archive_to_node(argv[2], head_x, fd);
+            node* head_c = create_link_with_string(argv[3]);
+            
+            linked_list_initializer(argc, argv, head_c);
+            fd = initilize_archive_write(argv[2]);
+            
+            append_link( head_c, head_x);
+
+            fill_archive(head_x, fd);
+        
+            free_linked_list(head_x);
+            close(fd);
         }
         else 
         {
@@ -238,18 +254,11 @@ void select_option(flags* my_flags, int argc, char** argv)
             my_putstr(": Cannot open: No such file or directory\n");
             my_putstr("my_tar: Error is not recoverable: exiting now\n");
         }
-    }   
-    else if(flag_sum == 2 && my_flags->u > 0)
-    {
-        printf("Run option u please\n");//option_u
-    }
-    else if(flag_sum == 2 && my_flags->r > 0)
-    {
-        printf("Run option r please\n");//option_r
+        
     }   
     else
     {
-        printf("You are doing something extremely wrong curb your expectations");
+        printf("You are doing something wrong, check your flags");
     }
 }
 
