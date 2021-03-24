@@ -10,7 +10,31 @@
 //     return link;
 // }
 
-node* create_link_with_string(char** files, int position, int argc)
+void linked_list_initializer(int position, char** argv, node* head, int argc, int is_head)
+{
+    int i = position;
+
+    while(i < argc)
+    {
+        if (check_existence(argv[i]) == 0)
+        {
+            node* temp = create_link_with_string(argv, i, argc, is_head);
+            head->next = temp;
+            head = head->next;
+        }
+        else
+        {
+            my_putstr("my_tar: ");
+            my_putstr(argv[i]);
+            my_putstr(": No such file or directory\n");
+        }
+        
+        i += 1;
+    }
+}
+
+
+node* create_link_with_string(char** files, int position, int argc, int is_head)
 {
     node* link = malloc(sizeof(node));
 
@@ -35,6 +59,11 @@ node* create_link_with_string(char** files, int position, int argc)
     link->file_contents[size] = '\0';
 
     link->next = NULL;
+    
+    if (position + 1 < argc && is_head == HEAD)
+        linked_list_initializer(position + 1, files, link, argc, NO_HEAD);
+
+
     return link;
 }
 

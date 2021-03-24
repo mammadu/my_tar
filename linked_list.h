@@ -5,6 +5,10 @@
 #include "posix_header_filler.h"
 #include "my_c_functions.h"
 
+#define HEAD (1)
+#define NO_HEAD (0)
+
+
 typedef struct node
 {
     char* string;
@@ -13,7 +17,9 @@ typedef struct node
     struct node* next;
 }node;
 
-node* create_link_with_string(char** files, int position, int argc);
+void linked_list_initializer(int position, char** argv, node* head, int argc, int is_head);
+
+node* create_link_with_string(char** files, int position, int argc, int is_head);
 
 node* create_link_with_max_string_length(int max_string_length);
 

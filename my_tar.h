@@ -21,6 +21,7 @@
 #define HEADER_FINALE "\0\0\0\0\0\0\0\0\0\0\0"
 #define ARCHIVE_FINALE (1024)
 #define FIRST_FILE (3)
+#define HEAD (1)
 
 //Struct to keep track of the passed flags
 
@@ -40,13 +41,13 @@ typedef struct flag_structs
 // Used 512 bytes to copy tar's block size. :)
 // Source: http://www.gnu.org/software/tar/manual/html_node/Blocking.html
 
-
+void linked_list_initializer(int position, char** argv, node* head, int argc);
 int initilize_archive(char* archive_name);
 // int check_existence(char* file_path);
 // int check_permission(char* file_path);
 void flag_initializer(flags* my_flags);
 void flag_hunter(int argc, char* argv[], flags* my_flags);
 void select_option(flags* my_flags, int argc, char** argv);
-void linked_list_initializer(int nodes_qty, char** argv, node* head, int argc);
+//void linked_list_initializer(int nodes_qty, char** argv, node* head, int argc);
 
 #endif
