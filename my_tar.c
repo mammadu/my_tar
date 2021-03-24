@@ -231,7 +231,6 @@ void select_option(flags* my_flags, int argc, char** argv)
             
             node* head_c = create_link_with_string(argv, FIRST_FILE, argc, HEAD);
             
-            linked_list_initializer(argc, argv, head_c, argc);
             fd = initilize_archive_write(argv[2]);
             
             append_link( head_c, head_x);

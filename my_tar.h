@@ -41,7 +41,7 @@ typedef struct flag_structs
 // Used 512 bytes to copy tar's block size. :)
 // Source: http://www.gnu.org/software/tar/manual/html_node/Blocking.html
 
-void linked_list_initializer(int position, char** argv, node* head, int argc);
+
 int initilize_archive(char* archive_name);
 // int check_existence(char* file_path);
 // int check_permission(char* file_path);
