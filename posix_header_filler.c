@@ -160,12 +160,18 @@ void fill_chksum(header* header)
     int sum = 0;
     char* header_index = header->name;
     int i = 0;
-    while (i <= HEADER_SIZE)
+    while (i < CHKSUM_OFFSET)
     {
         sum += header_index[i];
         i++;
     }
     sum += 32 * 8; //We assume that the chksum area are whitespaces so we add the value of a whitespace (32) times the number of whitespaces/
+    i = TYPEFLAG_OFFSET;
+    while(i < HEADER_SIZE)
+    {
+        sum += header_index[i];
+        i++;
+    }
     char* chksum = my_itoa_base(sum, 8);
     int len = my_strlen(chksum);
     char* zero_string = zero_filled_string(len, CHKSUM_LEN - 2); //We subtract 2 here because the last two characters of the checksum are a NULL and a whitespace
