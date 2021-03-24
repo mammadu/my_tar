@@ -11,5 +11,5 @@ https://www.mkssoftware.com/docs/man4/tar.4.asp
 
 TODO:
 Create fill_prefix() function
-Check if an archive is actually an archive
-Check if the proper amount of arguments are present
+Find way to append to an archive consisting of just nulls... maybe investigate is_archive?
+Create append by time function
