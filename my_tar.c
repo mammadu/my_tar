@@ -1,5 +1,7 @@
 #include "my_tar.h"
 
+//This is option C
+
 void write_header(node* node, int fd)
 {
     write(fd, node->header->name, 500);
@@ -198,8 +200,8 @@ void select_option(flags* my_flags, int argc, char** argv)
     else if (flag_sum == 2 && my_flags->c > 0)
     {
         //We need to check if argv[3] exist :/
-        node* head = create_link_with_string(argv[3]);
-        linked_list_initializer(argc, argv, head);
+        node* head = create_link_with_string(argv, FIRST_FILE, argc);
+        linked_list_initializer(argc, argv, head, argc);
         int fd = initilize_archive_write(argv[2]);
         fill_archive(head, fd);
         free_linked_list(head);
@@ -220,7 +222,17 @@ void select_option(flags* my_flags, int argc, char** argv)
     }
     else if(flag_sum == 2 && my_flags->t > 0)
     {
-        extract_archive_to_list(argv[2]);
+        if(check_existence(argv[2]) == 0)
+        {
+            extract_archive_to_list(argv[2]);
+        }
+        else 
+        {
+            my_putstr("my_tar: ");
+            my_putstr(argv[2]);
+            my_putstr(": Cannot open: No such file or directory\n");
+            my_putstr("my_tar: Error is not recoverable: exiting now\n");
+        }
     }   
     else if(flag_sum == 2 && my_flags->u > 0)
     {
@@ -230,12 +242,13 @@ void select_option(flags* my_flags, int argc, char** argv)
     {
         if(check_existence(argv[2]) == 0)
         {
-            //option_r
+            //Option_r
             int fd = initilize_archive_read(argv[2]);
             node* head_x = extract_archive_to_node(argv[2], head_x, fd);
-            node* head_c = create_link_with_string(argv[3]);
             
-            linked_list_initializer(argc, argv, head_c);
+            node* head_c = create_link_with_string(argv, FIRST_FILE, argc);
+            
+            linked_list_initializer(argc, argv, head_c, argc);
             fd = initilize_archive_write(argv[2]);
             
             append_link( head_c, head_x);
@@ -262,7 +275,7 @@ void select_option(flags* my_flags, int argc, char** argv)
 
 //Linked list implementation
 
-void linked_list_initializer(int nodes_qty, char** argv, node* head)
+void linked_list_initializer(int nodes_qty, char** argv, node* head, int argc)
 {
     int i = 4;
 
@@ -270,7 +283,7 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
     {
         if (check_existence(argv[i]) == 0)
         {
-            node* temp = create_link_with_string(argv[i]);
+            node* temp = create_link_with_string(argv, i, argc);
             head->next = temp;
             head = head->next;
         }
