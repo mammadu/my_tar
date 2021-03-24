@@ -1,5 +1,7 @@
 #include "my_tar.h"
 
+//This is option C
+
 void write_header(node* node, int fd)
 {
     write(fd, node->header->name, 500);
@@ -105,24 +107,7 @@ int initilize_archive_read(char* archive_name)
     }
 }
 
-//Checks for file existence. 0 means the file exists, -1 means the file doesn't exist.
-int check_existence(char* file_path)
-{
-    struct stat statbuf;
-    int val = stat(file_path, &statbuf);
-    return val;
-}
 
-//checks the user permission of a file and returns the octal value of the permission
-int check_permission(char* file_path)
-{
-    struct stat statbuf;
-    int status = stat(file_path, &statbuf);
-    char* item_type_and_permissions = my_itoa_base(statbuf.st_mode, 8);
-    int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
-    free(item_type_and_permissions);
-    return permission;
-}
 /*
 
 #	Permission	rwx
@@ -198,8 +183,8 @@ void select_option(flags* my_flags, int argc, char** argv)
     else if (flag_sum == 2 && my_flags->c > 0)
     {
         //We need to check if argv[3] exist :/
-        node* head = create_link_with_string(argv[3]);
-        linked_list_initializer(argc, argv, head);
+        node* head = create_link_with_string(argv, FIRST_FILE, argc);
+        linked_list_initializer(argc, argv, head, argc);
         int fd = initilize_archive_write(argv[2]);
         fill_archive(head, fd);
         free_linked_list(head);
@@ -241,9 +226,9 @@ void select_option(flags* my_flags, int argc, char** argv)
                 //option_r
                 int fd = initilize_archive_read(argv[2]);
                 node* head_x = extract_archive_to_node(argv[2], head_x, fd);
-                node* head_c = create_link_with_string(argv[3]);
+                node* head_c = create_link_with_string(argv, FIRST_FILE, argc);
                 
-                linked_list_initializer(argc, argv, head_c);
+                linked_list_initializer(argc, argv, head_c, argc);
                 fd = initilize_archive_write(argv[2]);
                 
                 append_link( head_c, head_x);
@@ -271,7 +256,7 @@ void select_option(flags* my_flags, int argc, char** argv)
 
 //Linked list implementation
 
-void linked_list_initializer(int nodes_qty, char** argv, node* head)
+void linked_list_initializer(int nodes_qty, char** argv, node* head, int argc)
 {
     int i = 4;
 
@@ -279,7 +264,7 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
     {
         if (check_existence(argv[i]) == 0)
         {
-            node* temp = create_link_with_string(argv[i]);
+            node* temp = create_link_with_string(argv, i, argc);
             head->next = temp;
             head = head->next;
         }
@@ -289,7 +274,6 @@ void linked_list_initializer(int nodes_qty, char** argv, node* head)
             my_putstr(argv[i]);
             my_putstr(": No such file or directory\n");
         }
-        
         i += 1;
     }
 }

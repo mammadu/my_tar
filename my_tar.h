@@ -20,6 +20,7 @@
 #include "archive_parser.h"
 #define HEADER_FINALE "\0\0\0\0\0\0\0\0\0\0\0"
 #define ARCHIVE_FINALE (1024)
+#define FIRST_FILE (3)
 
 //Struct to keep track of the passed flags
 
@@ -41,11 +42,11 @@ typedef struct flag_structs
 
 
 int initilize_archive(char* archive_name);
-int check_existence(char* file_path);
-int check_permission(char* file_path);
+// int check_existence(char* file_path);
+// int check_permission(char* file_path);
 void flag_initializer(flags* my_flags);
 void flag_hunter(int argc, char* argv[], flags* my_flags);
 void select_option(flags* my_flags, int argc, char** argv);
-void linked_list_initializer(int nodes_qty, char** argv, node* head);
+void linked_list_initializer(int nodes_qty, char** argv, node* head, int argc);
 
 #endif

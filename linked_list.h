@@ -13,7 +13,7 @@ typedef struct node
     struct node* next;
 }node;
 
-node* create_link_with_string(char* string);
+node* create_link_with_string(char** files, int position, int argc);
 
 node* create_link_with_max_string_length(int max_string_length);
 

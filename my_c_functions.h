@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 char* my_strdup(char* param_1);
 
@@ -27,5 +30,9 @@ char* my_itoa_base(int value, int base);
 int my_strcmp(char* param_1, char* param_2);
 
 void null_filler(void* pointer, int length);
+
+int check_existence(char* file_path);
+
+int check_permission(char* file_path);
 
 #endif

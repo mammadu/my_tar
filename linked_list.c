@@ -10,10 +10,19 @@
 //     return link;
 // }
 
-node* create_link_with_string(char* string)
+node* create_link_with_string(char** files, int position, int argc)
 {
     node* link = malloc(sizeof(node));
-    link->string = my_strdup(string);
+
+    while(check_existence(files[position])  != 0 && position < argc)
+    {
+        my_putstr("my_tar: ");
+        my_putstr(files[position]);
+        my_putstr(": No such file or directory\n");
+        position+= 1;
+    }
+    
+    link->string = my_strdup(files[position]);
 
     link->header = malloc(sizeof(header));
     fill_header(link->string, link->header);
