@@ -36,7 +36,7 @@ void linked_list_initializer(int position, char** argv, node* head, int argc, in
 
 node* create_link_with_string(char** files, int position, int argc, int is_head)
 {
-    node* link = malloc(sizeof(node));
+    
 
     while(check_existence(files[position])  != 0 && position < argc)
     {
@@ -45,26 +45,37 @@ node* create_link_with_string(char** files, int position, int argc, int is_head)
         my_putstr(": No such file or directory\n");
         position+= 1;
     }
+
+    printf("position = %d\n", position);
+
+    if (position < argc)
+    {
+        node* link = malloc(sizeof(node));
+
+        link->string = my_strdup(files[position]);
+
+        link->header = malloc(sizeof(header));
+        fill_header(link->string, link->header);
+
+        int size = my_atoi_base(link->header->size, 8);
+        link->file_contents = malloc((size + 1) * sizeof(char));
+        int fd = open(link->string, O_RDONLY);
+        int bytes_read = read(fd, link->file_contents, size); //bytes read should equal size on a successful read
+        close(fd);
+        link->file_contents[size] = '\0';
+
+        link->next = NULL;
+        
+        if (position + 1 < argc && is_head == HEAD)
+            linked_list_initializer(position + 1, files, link, argc, NO_HEAD);
+
+        return link;
+    }
+    else
+    {
+        return NULL;
+    }
     
-    link->string = my_strdup(files[position]);
-
-    link->header = malloc(sizeof(header));
-    fill_header(link->string, link->header);
-
-    int size = my_atoi_base(link->header->size, 8);
-    link->file_contents = malloc((size + 1) * sizeof(char));
-    int fd = open(link->string, O_RDONLY);
-    int bytes_read = read(fd, link->file_contents, size); //bytes read should equal size on a successful read
-    close(fd);
-    link->file_contents[size] = '\0';
-
-    link->next = NULL;
-    
-    if (position + 1 < argc && is_head == HEAD)
-        linked_list_initializer(position + 1, files, link, argc, NO_HEAD);
-
-
-    return link;
 }
 
 //starts a link with memory allocated to receive a string later on

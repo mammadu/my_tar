@@ -42,7 +42,7 @@ void write_content(node* node, int fd)
 //write header and file content into the fd opened by create_archive
 int fill_archive(node* head, int fd)
 {
-    while( head != NULL)
+    while(head != NULL)
     {
         write_header(head, fd); //debug tomorrow at work the position of next file
         if (head->header->typeflag != '1' && head->header->typeflag != '2' && head->header->typeflag != '5')
@@ -187,6 +187,7 @@ void select_option(flags* my_flags, int argc, char** argv)
         //linked_list_initializer(argc, argv, head, argc);
         int fd = initilize_archive_write(argv[2]);
         fill_archive(head, fd);
+        if(read_list(head) > 0)
         free_linked_list(head);
     }
     else if(flag_sum == 2 && my_flags->x > 0)
