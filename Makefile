@@ -28,6 +28,9 @@ files:
 clean:
 	rm *.o core.* *.tar
 
+tarclean:
+	rm *.tar
+
 fclean:
 	rm -rf main header parser
 

@@ -12,21 +12,28 @@
 
 node* create_link_with_string(char* string)
 {
-    node* link = malloc(sizeof(node));
-    link->string = my_strdup(string);
+    int fd = open(string, O_RDONLY);
+    if(fd != -1)
+    {
+        node* link = malloc(sizeof(node));
+        link->string = my_strdup(string);
 
-    link->header = malloc(sizeof(header));
-    fill_header(link->string, link->header);
+        link->header = malloc(sizeof(header));
+        fill_header(link->string, link->header);
 
-    int size = my_atoi_base(link->header->size, 8);
-    link->file_contents = malloc((size + 1) * sizeof(char));
-    int fd = open(link->string, O_RDONLY);
-    int bytes_read = read(fd, link->file_contents, size); //bytes read should equal size on a successful read
-    close(fd);
-    link->file_contents[size] = '\0';
+        int size = my_atoi_base(link->header->size, 8);
+        link->file_contents = malloc((size + 1) * sizeof(char));
+        int bytes_read = read(fd, link->file_contents, size); //bytes read should equal size on a successful read
+        close(fd);
+        link->file_contents[size] = '\0';
 
-    link->next = NULL;
-    return link;
+        link->next = NULL;
+        return link;
+    }
+    else //if it can't open the file path, return NULL
+    {
+        return NULL;
+    }
 }
 
 //starts a link with memory allocated to receive a string later on

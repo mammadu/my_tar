@@ -139,28 +139,63 @@ int initilize_archive_read(char* archive_name)
     }
 }
 
-//Linked list implementation
-void linked_list_initializer(int nodes_qty, char** argv, node* head)
+//Linked list implementation. Creates the linked list and returns the head of the linked list. Returns NULL if none ofthe arguments are real files.
+node* linked_list_initializer(int argc, char** argv)
 {
-    int i = 4;
+    int i = FIRST_FILE_ARG;
 
-    while(i < nodes_qty)
+    node* head = create_link_with_string(argv[i]); //returns NULL if file does not exist
+    while(head == NULL && i < argc) //keeps going through arguments until head != NULL
     {
-        if (check_existence(argv[i]) == 0)
+        if (errno == 2)
         {
-            node* temp = create_link_with_string(argv[i]);
-            head->next = temp;
-            head = head->next;
+            my_putstr("my_tar: ");
+            my_putstr(argv[i]);
+            my_putstr(": Cannot stat: No such file or directory\n");
+        }
+        else if (errno == 13)
+        {
+            my_putstr("my_tar: ");
+            my_putstr(argv[i]);
+            my_putstr(": Cannot open: Permission denied\n");
         }
         else
+        {
+            my_putstr("my_tar: ERRNO =");
+            char* error = my_itoa_base(errno, 10);
+            my_putstr(error);
+            my_putstr(": Review man error for details\n");
+        }
+        i++;
+        head = create_link_with_string(argv[i]);
+    }
+    node* current = head;
+    i++;
+
+    while(i < argc) //adds rest of arguments into linked list
+    {
+        if (check_existence(argv[i]) == 0 && (check_permission(argv[i]) == 7 || check_permission(argv[i]) == 6 || check_permission(argv[i]) == 5 || check_permission(argv[i]) == 4)) //ie if the file exists and we have read permission
+        {
+            node* temp = create_link_with_string(argv[i]);
+            current->next = temp;
+            current = current->next;
+        }
+        else if (check_existence(argv[i]) == -1)
         {
             my_putstr("my_tar: ");
             my_putstr(argv[i]);
             my_putstr(": No such file or directory\n");
         }
-        
+        else
+        {
+            my_putstr("my_tar: ");
+            my_putstr(argv[i]);
+            my_putstr(": Cannot open: Permission denied\n");
+        }
         i += 1;
     }
+
+    return head;
 }
 
 void flag_initializer(flags* my_flags)
@@ -223,9 +258,7 @@ void select_option(flags* my_flags, int argc, char** argv)
     }
     else if (flag_sum == 2 && my_flags->c > 0)
     {
-        //We need to check if argv[3] exist :/
-        node* head = create_link_with_string(argv[FIRST_FILE_ARG]);
-        linked_list_initializer(argc, argv, head);
+        node* head = linked_list_initializer(argc, argv);
         int fd = initilize_archive_write(argv[ARCHIVE_ARG]);
         fill_archive(head, fd);
         free_linked_list(head);
@@ -267,9 +300,11 @@ void select_option(flags* my_flags, int argc, char** argv)
                 //option_r
                 int fd = initilize_archive_read(argv[ARCHIVE_ARG]);
                 node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
-                node* head_c = create_link_with_string(argv[FIRST_FILE_ARG]);
+                // node* head_c = create_link_with_string(argv[FIRST_FILE_ARG]);
                 
-                linked_list_initializer(argc, argv, head_c);
+                // linked_list_initializer(argc, argv, head_c);
+
+                node* head_c = linked_list_initializer(argc, argv);
                 fd = initilize_archive_write(argv[ARCHIVE_ARG]);
                 
                 append_link( head_c, head_x);
