@@ -13,6 +13,25 @@ char* my_strcpy(char* dst, char* src)
 	return (dst);
 }
 
+//Checks for file existence. 0 means the file exists, -1 means the file doesn't exist.
+int check_existence(char* file_path)
+{
+    struct stat statbuf;
+    int val = stat(file_path, &statbuf);
+    return val;
+}
+
+//checks the user permission of a file and returns the octal value of the permission
+int check_permission(char* file_path)
+{
+    struct stat statbuf;
+    int status = stat(file_path, &statbuf);
+    char* item_type_and_permissions = my_itoa_base(statbuf.st_mode, 8);
+    int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
+    free(item_type_and_permissions);
+    return permission;
+}
+
 char* my_strdup(char* param_1)
 {
     char* str_copy;

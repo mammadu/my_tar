@@ -22,7 +22,7 @@ node* create_link_with_string(char** files, int position, int argc)
         position+= 1;
     }
     
-    link->string = my_strdup(strings[position]);
+    link->string = my_strdup(files[position]);
 
     link->header = malloc(sizeof(header));
     fill_header(link->string, link->header);
