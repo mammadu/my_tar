@@ -208,7 +208,10 @@ void select_option(flags* my_flags, int argc, char** argv)
     {
         if(check_existence(argv[2]) == 0)
         {
-            extract_archive(argv[2]);
+            if (is_archive(argv[2]) == 0)
+            {
+                extract_archive(argv[2]);
+            }
         }
         else 
         {
@@ -220,7 +223,10 @@ void select_option(flags* my_flags, int argc, char** argv)
     }
     else if(flag_sum == 2 && my_flags->t > 0)
     {
-        extract_archive_to_list(argv[2]);
+        if (is_archive(argv[2]) == 0)
+        {
+            extract_archive_to_list(argv[2]);
+        }
     }   
     else if(flag_sum == 2 && my_flags->u > 0)
     {
@@ -230,20 +236,23 @@ void select_option(flags* my_flags, int argc, char** argv)
     {
         if(check_existence(argv[2]) == 0)
         {
-            //option_r
-            int fd = initilize_archive_read(argv[2]);
-            node* head_x = extract_archive_to_node(argv[2], head_x, fd);
-            node* head_c = create_link_with_string(argv[3]);
-            
-            linked_list_initializer(argc, argv, head_c);
-            fd = initilize_archive_write(argv[2]);
-            
-            append_link( head_c, head_x);
+            if (is_archive(argv[2]) == 0)
+            {
+                //option_r
+                int fd = initilize_archive_read(argv[2]);
+                node* head_x = extract_archive_to_node(argv[2], head_x, fd);
+                node* head_c = create_link_with_string(argv[3]);
+                
+                linked_list_initializer(argc, argv, head_c);
+                fd = initilize_archive_write(argv[2]);
+                
+                append_link( head_c, head_x);
 
-            fill_archive(head_x, fd);
-        
-            free_linked_list(head_x);
-            close(fd);
+                fill_archive(head_x, fd);
+            
+                free_linked_list(head_x);
+                close(fd);
+            }
         }
         else 
         {

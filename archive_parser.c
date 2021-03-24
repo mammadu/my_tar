@@ -42,23 +42,24 @@ int is_archive(char* file_path)
     int fd = open(file_path, O_RDONLY);
     if (fd == -1)
     {
-        my_putstr("tar: ");
+        my_putstr("my_tar: ");
         my_putstr(file_path);
-        my_putstr(": Cannot open: Permission denied\n");
-        my_putstr("tar: Error is not recoverable: exiting now\n");
+        my_putstr(": Cannot open: Permission denied or file does not exist\n");
+        my_putstr("my_tar: Error is not recoverable: exiting now\n");
+        close(fd);
         return -1;
     }
     else
     {
         header* head = malloc(sizeof(header));
         read(fd, head, HEADER_SIZE);
-        int checksum_byte_sum = string_byte_sum(head->chksum, CHKSUM_LEN); //sum of bytes in checksum field
         int original_checksum = my_atoi_base(head->chksum, 8);
         fill_chksum(head);
-        int new_checksum = my_atoi_base(head->chksum, 8); 
+        int new_checksum = my_atoi_base(head->chksum, 8);
         free(head);
+        close(fd);
         //we subtract checksum_byte_sum because fill_chksum works assuming the chksum field is only nulls
-        if (original_checksum == (new_checksum - checksum_byte_sum))
+        if (original_checksum == new_checksum)
         {
             return 0;
         }
