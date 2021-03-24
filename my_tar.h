@@ -20,6 +20,8 @@
 #include "archive_parser.h"
 #define HEADER_FINALE "\0\0\0\0\0\0\0\0\0\0\0"
 #define ARCHIVE_FINALE (1024)
+#define ARCHIVE_ARG (2) //for any option, the archive argument is index 2
+#define FIRST_FILE_ARG (3) //for any option, the first file argument is index 3
 
 //Struct to keep track of the passed flags
 

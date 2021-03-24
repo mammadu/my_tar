@@ -55,6 +55,40 @@ int fill_archive(node* head, int fd)
     free(end);
 }
 
+
+
+//Checks for file existence. 0 means the file exists, -1 means the file doesn't exist.
+int check_existence(char* file_path)
+{
+    struct stat statbuf;
+    int val = stat(file_path, &statbuf);
+    return val;
+}
+
+//checks the user permission of a file and returns the octal value of the permission
+int check_permission(char* file_path)
+{
+    struct stat statbuf;
+    int status = stat(file_path, &statbuf);
+    char* item_type_and_permissions = my_itoa_base(statbuf.st_mode, 8);
+    int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
+    free(item_type_and_permissions);
+    return permission;
+}
+/*
+
+#	Permission	rwx
+7	read, write and execute	rwx
+6	read and write	rw-
+5	read and execute	r-x
+4	read only	r--	100
+3	write and execute	-wx
+2	write only	-w-
+1	execute only	--x
+0	none	---
+
+*/
+
 //returns the file descriptor after checking for existance and permissions.
 int initilize_archive_write(char* archive_name)
 {
@@ -105,37 +139,29 @@ int initilize_archive_read(char* archive_name)
     }
 }
 
-//Checks for file existence. 0 means the file exists, -1 means the file doesn't exist.
-int check_existence(char* file_path)
+//Linked list implementation
+void linked_list_initializer(int nodes_qty, char** argv, node* head)
 {
-    struct stat statbuf;
-    int val = stat(file_path, &statbuf);
-    return val;
+    int i = 4;
+
+    while(i < nodes_qty)
+    {
+        if (check_existence(argv[i]) == 0)
+        {
+            node* temp = create_link_with_string(argv[i]);
+            head->next = temp;
+            head = head->next;
+        }
+        else
+        {
+            my_putstr("my_tar: ");
+            my_putstr(argv[i]);
+            my_putstr(": No such file or directory\n");
+        }
+        
+        i += 1;
+    }
 }
-
-//checks the user permission of a file and returns the octal value of the permission
-int check_permission(char* file_path)
-{
-    struct stat statbuf;
-    int status = stat(file_path, &statbuf);
-    char* item_type_and_permissions = my_itoa_base(statbuf.st_mode, 8);
-    int permission = item_type_and_permissions[my_strlen(item_type_and_permissions) - 3] - '0';
-    free(item_type_and_permissions);
-    return permission;
-}
-/*
-
-#	Permission	rwx
-7	read, write and execute	rwx
-6	read and write	rw-
-5	read and execute	r-x
-4	read only	r--	100
-3	write and execute	-wx
-2	write only	-w-
-1	execute only	--x
-0	none	---
-
-*/
 
 void flag_initializer(flags* my_flags)
 {
@@ -198,34 +224,34 @@ void select_option(flags* my_flags, int argc, char** argv)
     else if (flag_sum == 2 && my_flags->c > 0)
     {
         //We need to check if argv[3] exist :/
-        node* head = create_link_with_string(argv[3]);
+        node* head = create_link_with_string(argv[FIRST_FILE_ARG]);
         linked_list_initializer(argc, argv, head);
-        int fd = initilize_archive_write(argv[2]);
+        int fd = initilize_archive_write(argv[ARCHIVE_ARG]);
         fill_archive(head, fd);
         free_linked_list(head);
     }
     else if(flag_sum == 2 && my_flags->x > 0)
     {
-        if(check_existence(argv[2]) == 0)
+        if(check_existence(argv[ARCHIVE_ARG]) == 0)
         {
-            if (is_archive(argv[2]) == 0)
+            if (is_archive(argv[ARCHIVE_ARG]) == 0)
             {
-                extract_archive(argv[2]);
+                extract_archive(argv[ARCHIVE_ARG]);
             }
         }
         else 
         {
             my_putstr("my_tar: ");
-            my_putstr(argv[2]);
+            my_putstr(argv[ARCHIVE_ARG]);
             my_putstr(": Cannot open: No such file or directory\n");
             my_putstr("my_tar: Error is not recoverable: exiting now\n");
         }
     }
     else if(flag_sum == 2 && my_flags->t > 0)
     {
-        if (is_archive(argv[2]) == 0)
+        if (is_archive(argv[ARCHIVE_ARG]) == 0)
         {
-            extract_archive_to_list(argv[2]);
+            extract_archive_to_list(argv[ARCHIVE_ARG]);
         }
     }   
     else if(flag_sum == 2 && my_flags->u > 0)
@@ -234,17 +260,17 @@ void select_option(flags* my_flags, int argc, char** argv)
     }
     else if(flag_sum == 2 && my_flags->r > 0)
     {
-        if(check_existence(argv[2]) == 0)
+        if(check_existence(argv[ARCHIVE_ARG]) == 0)
         {
-            if (is_archive(argv[2]) == 0)
+            if (is_archive(argv[ARCHIVE_ARG]) == 0)
             {
                 //option_r
-                int fd = initilize_archive_read(argv[2]);
-                node* head_x = extract_archive_to_node(argv[2], head_x, fd);
-                node* head_c = create_link_with_string(argv[3]);
+                int fd = initilize_archive_read(argv[ARCHIVE_ARG]);
+                node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
+                node* head_c = create_link_with_string(argv[FIRST_FILE_ARG]);
                 
                 linked_list_initializer(argc, argv, head_c);
-                fd = initilize_archive_write(argv[2]);
+                fd = initilize_archive_write(argv[ARCHIVE_ARG]);
                 
                 append_link( head_c, head_x);
 
@@ -257,7 +283,7 @@ void select_option(flags* my_flags, int argc, char** argv)
         else 
         {
             my_putstr("my_tar: ");
-            my_putstr(argv[2]);
+            my_putstr(argv[ARCHIVE_ARG]);
             my_putstr(": Cannot open: No such file or directory\n");
             my_putstr("my_tar: Error is not recoverable: exiting now\n");
         }
@@ -266,31 +292,6 @@ void select_option(flags* my_flags, int argc, char** argv)
     else
     {
         printf("You are doing something wrong, check your flags");
-    }
-}
-
-//Linked list implementation
-
-void linked_list_initializer(int nodes_qty, char** argv, node* head)
-{
-    int i = 4;
-
-    while(i < nodes_qty)
-    {
-        if (check_existence(argv[i]) == 0)
-        {
-            node* temp = create_link_with_string(argv[i]);
-            head->next = temp;
-            head = head->next;
-        }
-        else
-        {
-            my_putstr("my_tar: ");
-            my_putstr(argv[i]);
-            my_putstr(": No such file or directory\n");
-        }
-        
-        i += 1;
     }
 }
 

@@ -20,6 +20,11 @@ test: main parser
 %.o: %.c %.h
 	${CC} -c $<
 
+files:
+	touch a b c
+	mkdir dir0
+	ln -s Makefile newlink
+
 clean:
 	rm *.o core.* *.tar
 
