@@ -350,13 +350,16 @@ void select_option(flags* my_flags, int argc, char** argv)
                 //option_r
                 int fd = initilize_archive_read(argv[ARCHIVE_ARG]);
                 node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
+                printf("head_x pointer = %p\n", head_x);
                 node* head_c = linked_list_initializer(argc, argv);
+                printf("head_c pointer = %p\n", head_c);
                 fd = initilize_archive_write(argv[ARCHIVE_ARG]);
                 filter_arguments_by_modtime(head_x, head_c);
                 fill_archive(head_x, fd);
-            
+                printf("head_x pointer = %p\n", head_x);
+                printf("head_c pointer = %p\n", head_c);
                 free_linked_list(head_x);
-                free_linked_list(head_c);
+                // free_linked_list(head_c);
                 close(fd);
             }
         }
