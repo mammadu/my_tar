@@ -200,12 +200,12 @@ node* linked_list_initializer(int argc, char** argv)
 
 void flag_initializer(flags* my_flags)
 {
-    my_flags->c = 0; 
-    my_flags->x = 0; 
-    my_flags->t = 0; 
+    my_flags->c = 0;
+    my_flags->x = 0;
+    my_flags->t = 0;
     my_flags->u = 0;
-    my_flags->r = 0; 
-    my_flags->f = 0;    
+    my_flags->r = 0;
+    my_flags->f = 0;
 }
 
 //loops thru the argv string until it finds the flags 
@@ -257,43 +257,44 @@ void filter_arguments_by_modtime(node* head_x, node* head_c)
         //else make copy link with next = NULL and append to archive list
     //repeat for entire argument list
 
-    while (head_c != NULL)
+    
+    node* argument_temp_head = head_c;
+    node* archive_temp_head = head_x;
+    while (argument_temp_head != NULL)
     {
-        node* archive_temp_head = head_x;
-        node* argument_temp_head;
         while (archive_temp_head != NULL)
         {
-            if (strcmp(archive_temp_head->string, head_c->string) == 0) //if both nodes have the same name, compare the modified time
+            if (strcmp(archive_temp_head->string, argument_temp_head->string) == 0) //if both nodes have the same name, compare the modified time
             {
                 int archive_mod_time = my_atoi_base(archive_temp_head->header->mtime, 8);
-                int argument_mod_time = my_atoi_base(head_c->header->mtime, 8);
+                int argument_mod_time = my_atoi_base(argument_temp_head->header->mtime, 8);
                 
                 if (argument_mod_time > archive_mod_time) // if the argument node has a modified time greater than the archive node, append to the archive linked list
                 {
-                    argument_temp_head = head_c;
-                    head_c = head_c->next;
-                    argument_temp_head->next = NULL;
-                    append_link(argument_temp_head, archive_temp_head);
+                    node* temp_link = argument_temp_head;
+                    argument_temp_head = argument_temp_head->next;
+                    temp_link->next = NULL;
+                    append_link(temp_link, archive_temp_head);
                 }
                 else //otherwise move to the next argument node
                 {
-                    head_c = head_c->next;
+                    argument_temp_head = argument_temp_head->next;
                 }
             }
             archive_temp_head = archive_temp_head->next;
-            if (head_c == NULL)
+            if (argument_temp_head == NULL)
             {
                 break;
             }
         }
-        if (head_c == NULL)
+        if (argument_temp_head == NULL)
         {
             break;
         }
-        argument_temp_head = head_c;
-        head_c = head_c->next;
-        argument_temp_head->next = NULL;
-        append_link(argument_temp_head, archive_temp_head);
+        node* temp_link = argument_temp_head;
+        argument_temp_head = argument_temp_head->next;
+        temp_link->next = NULL;
+        append_link(temp_link, archive_temp_head);
     }
 }
 
@@ -359,7 +360,7 @@ void select_option(flags* my_flags, int argc, char** argv)
                 printf("head_x pointer = %p\n", head_x);
                 printf("head_c pointer = %p\n", head_c);
                 free_linked_list(head_x);
-                // free_linked_list(head_c);
+                free_linked_list(head_c);
                 close(fd);
             }
         }
