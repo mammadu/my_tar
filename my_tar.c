@@ -247,6 +247,56 @@ void flag_hunter(int argc, char* argv[], flags* my_flags)
     }
 }
 
+void filter_arguments_by_modtime(node* head_x, node* head_c)
+{
+    //take first argument_list element
+    //compare against entire archive_list elements
+        //if both elements have the same name, compare time
+            //if argument has newer time, make copy link with next = NULL and append to archive list
+            //else move to next element in argument list
+        //else make copy link with next = NULL and append to archive list
+    //repeat for entire argument list
+
+    while (head_c != NULL)
+    {
+        node* archive_temp_head = head_x;
+        node* argument_temp_head;
+        while (archive_temp_head != NULL)
+        {
+            if (strcmp(archive_temp_head->string, head_c->string) == 0) //if both nodes have the same name, compare the modified time
+            {
+                int archive_mod_time = my_atoi_base(archive_temp_head->header->mtime, 8);
+                int argument_mod_time = my_atoi_base(head_c->header->mtime, 8);
+                if (argument_mod_time > archive_mod_time) // if the argument node has a modified time greater than the archive node, append to the archive linked list
+                {
+                    argument_temp_head = head_c;
+                    head_c = head_c->next;
+                    argument_temp_head->next = NULL;
+                    append_link(argument_temp_head, archive_temp_head);
+                }
+                else //otherwise move to the next argument node
+                {
+                    head_c = head_c->next;
+                }
+            }
+            archive_temp_head = archive_temp_head->next;
+            if (head_c == NULL)
+            {
+                break;
+            }
+        }
+        if (head_c == NULL)
+        {
+            break;
+        }
+        argument_temp_head = head_c;
+        head_c = head_c->next;
+        argument_temp_head->next = NULL;
+        append_link(argument_temp_head, archive_temp_head);
+    }
+    printf("we made it bois");
+}
+
 void select_option(flags* my_flags, int argc, char** argv)
 {   
     int flag_sum = my_flags->c + my_flags->x + my_flags->t + my_flags->u + my_flags->r + my_flags->f;
@@ -284,7 +334,6 @@ void select_option(flags* my_flags, int argc, char** argv)
     {
         if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc == 3)
         {
-            printf("argc = %d", argc);
             extract_archive_to_list(argv[ARCHIVE_ARG]);
         }
         if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc > 3)
@@ -294,7 +343,31 @@ void select_option(flags* my_flags, int argc, char** argv)
     }   
     else if(flag_sum == 2 && my_flags->u > 0)
     {
-        printf("Run option u please\n");//option_u
+        if(check_existence(argv[ARCHIVE_ARG]) == 0)
+        {
+            if (is_archive(argv[ARCHIVE_ARG]) == 0)
+            {
+                //option_r
+                int fd = initilize_archive_read(argv[ARCHIVE_ARG]);
+                node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
+                node* head_c = linked_list_initializer(argc, argv);
+                fd = initilize_archive_write(argv[ARCHIVE_ARG]);
+                filter_arguments_by_modtime(head_x, head_c);
+
+                fill_archive(head_x, fd);
+            
+                free_linked_list(head_x);
+                free_linked_list(head_c);
+                close(fd);
+            }
+        }
+        else 
+        {
+            my_putstr("my_tar: ");
+            my_putstr(argv[ARCHIVE_ARG]);
+            my_putstr(": Cannot open: No such file or directory\n");
+            my_putstr("my_tar: Error is not recoverable: exiting now\n");
+        }
     }
     else if(flag_sum == 2 && my_flags->r > 0)
     {
@@ -305,10 +378,6 @@ void select_option(flags* my_flags, int argc, char** argv)
                 //option_r
                 int fd = initilize_archive_read(argv[ARCHIVE_ARG]);
                 node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
-                // node* head_c = create_link_with_string(argv[FIRST_FILE_ARG]);
-                
-                // linked_list_initializer(argc, argv, head_c);
-
                 node* head_c = linked_list_initializer(argc, argv);
                 fd = initilize_archive_write(argv[ARCHIVE_ARG]);
                 
