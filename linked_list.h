@@ -2,6 +2,7 @@
 #define linked_list_H
 #include <stdio.h>
 #include <stdlib.h>
+// #include <errno.h>
 #include "posix_header_filler.h"
 #include "my_c_functions.h"
 
@@ -13,7 +14,7 @@ typedef struct node
     struct node* next;
 }node;
 
-node* create_link_with_string(char** files, int position, int argc);
+node* create_link_with_string(char* string);
 
 node* create_link_with_max_string_length(int max_string_length);
 
