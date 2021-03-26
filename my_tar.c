@@ -266,11 +266,7 @@ void filter_arguments_by_modtime(node* head_x, node* head_c)
             if (strcmp(archive_temp_head->string, head_c->string) == 0) //if both nodes have the same name, compare the modified time
             {
                 int archive_mod_time = my_atoi_base(archive_temp_head->header->mtime, 8);
-                printf("archive_temp_head->string = %s\n", archive_temp_head->string);
-                printf("archive_mod_time = %d\n", archive_mod_time);
                 int argument_mod_time = my_atoi_base(head_c->header->mtime, 8);
-                printf("head_c->string = %s\n", head_c->string);
-                printf("argument_mod_time = %d\n", argument_mod_time);
                 
                 if (argument_mod_time > archive_mod_time) // if the argument node has a modified time greater than the archive node, append to the archive linked list
                 {
@@ -360,8 +356,7 @@ void select_option(flags* my_flags, int argc, char** argv)
                 fill_archive(head_x, fd);
             
                 free_linked_list(head_x);
-                
-                // free_linked_list(head_c);
+                free_linked_list(head_c);
                 close(fd);
             }
         }

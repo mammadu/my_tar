@@ -121,6 +121,7 @@ node* fill_link(int fd)
     //read string name, header, file contents,
     node* link = malloc(sizeof(node));
     link->header = malloc(sizeof(header));
+    
     int header_bytes_read = read(fd, link->header, HEADER_SIZE);
 
 
@@ -233,7 +234,7 @@ node* extract_archive_to_node(char* archive_name, node* head, int fd)
     archive_to_linked_list(fd, current_position, head);
 
     //creates files from linked list
-    file_creator_from_list(head);
+    // file_creator_from_list(head);
 
     return head;
 }
