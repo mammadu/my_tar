@@ -266,7 +266,12 @@ void filter_arguments_by_modtime(node* head_x, node* head_c)
             if (strcmp(archive_temp_head->string, head_c->string) == 0) //if both nodes have the same name, compare the modified time
             {
                 int archive_mod_time = my_atoi_base(archive_temp_head->header->mtime, 8);
+                printf("archive_temp_head->string = %s\n", archive_temp_head->string);
+                printf("archive_mod_time = %d\n", archive_mod_time);
                 int argument_mod_time = my_atoi_base(head_c->header->mtime, 8);
+                printf("head_c->string = %s\n", head_c->string);
+                printf("argument_mod_time = %d\n", argument_mod_time);
+                
                 if (argument_mod_time > archive_mod_time) // if the argument node has a modified time greater than the archive node, append to the archive linked list
                 {
                     argument_temp_head = head_c;
@@ -294,7 +299,6 @@ void filter_arguments_by_modtime(node* head_x, node* head_c)
         argument_temp_head->next = NULL;
         append_link(argument_temp_head, archive_temp_head);
     }
-    printf("we made it bois");
 }
 
 void select_option(flags* my_flags, int argc, char** argv)
@@ -353,11 +357,11 @@ void select_option(flags* my_flags, int argc, char** argv)
                 node* head_c = linked_list_initializer(argc, argv);
                 fd = initilize_archive_write(argv[ARCHIVE_ARG]);
                 filter_arguments_by_modtime(head_x, head_c);
-
                 fill_archive(head_x, fd);
             
                 free_linked_list(head_x);
-                free_linked_list(head_c);
+                
+                // free_linked_list(head_c);
                 close(fd);
             }
         }
