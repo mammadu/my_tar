@@ -30,4 +30,6 @@ node* return_next_link(node* link);
 
 void free_linked_list(node* head);
 
+int read_list_on_demand(node* head, char* file_name);
+
 #endif

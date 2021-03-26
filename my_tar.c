@@ -282,10 +282,15 @@ void select_option(flags* my_flags, int argc, char** argv)
     }
     else if(flag_sum == 2 && my_flags->t > 0)
     {
-        if (is_archive(argv[ARCHIVE_ARG]) == 0)
+        if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc == 3)
         {
+            printf("argc = %d", argc);
             extract_archive_to_list(argv[ARCHIVE_ARG]);
         }
+        if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc > 3)
+        {
+            extract_archive_to_list_on_demand(argv[ARCHIVE_ARG], argv, argc);    
+        }   
     }   
     else if(flag_sum == 2 && my_flags->u > 0)
     {

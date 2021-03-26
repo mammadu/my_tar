@@ -86,6 +86,32 @@ int read_list(node* head)
     return index;
 }
 
+//prints on the stdout the file_name in case it exist on archive
+int read_list_on_demand(node* head, char* file_name)
+{  
+    int finding = 0;
+    while (head != NULL)
+    {
+        
+        if(my_strcmp(head->string, file_name) == 0)
+        {
+            my_putstr(head->string);
+            my_putstr("\n");
+            finding += 1;
+        }
+
+        head = head->next;
+    }
+    if (finding == 0)
+    {
+        my_putstr("my_tar: ");
+        my_putstr(file_name);
+        my_putstr(": Not found in archive\n");
+    }
+
+    return finding;
+}
+
 //return address of next link
 node* return_next_link(node* link)
 {
