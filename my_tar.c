@@ -295,7 +295,6 @@ void free_filtered_args(f_arguments* f_arg)
     int i = 0;
     while (i < f_arg->f_argc)
     {
-        printf("f_arg->f_argv[i] = %s\n", f_arg->f_argv[i]);
         free(f_arg->f_argv[i]);
         i++;
     }
@@ -309,7 +308,7 @@ void select_option(flags* my_flags, int argc, char** argv)
 
     if (my_flags->f < 1)
     {
-        printf("You need -f to run my_tar my_dude\n");
+        my_putstr("Cannot execute. Missing -f option?\n");
         return;
     }
     else if (flag_sum == 2 && my_flags->c > 0)
@@ -362,7 +361,6 @@ void select_option(flags* my_flags, int argc, char** argv)
                 node* head_u = linked_list_initializer(filtered_args->f_argc, filtered_args->f_argv);
                 //filter by argument modtime 
                 int links = read_list(head_u);
-                printf("number of links = %d\n", links);
                 append_link(head_u, head_x);
                 fd = initilize_archive_write(argv[ARCHIVE_ARG]);
                 
@@ -413,7 +411,7 @@ void select_option(flags* my_flags, int argc, char** argv)
     }   
     else
     {
-        printf("You are doing something wrong, check your flags");
+        my_putstr("my_tar: You must specify one of the '-ctrux'\n");
     }
 }
 
