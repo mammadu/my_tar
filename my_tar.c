@@ -250,24 +250,33 @@ void flag_hunter(int argc, char* argv[], flags* my_flags)
 node* filter_arguments_by_modtime(node* head_x, node* head_c)
 {
     node* head_u = malloc(sizeof(node));
+    node* temp_head_x = head_x->next;
     int debugging_exterior = 0;
     int debugging_interior = 0;
 
     while(head_c != NULL )
     {
-        printf("%d\n", debugging_exterior);
+        printf("e: %s = %d\n",head_c->string ,debugging_exterior);
+        
         while(head_x != NULL)
         {
-            printf("%d\n", debugging_interior);
+            if(my_strcmp(head_c->string, head_x->string) == 0)
+            {
+                printf("%s , %s\n", head_c->string, head_x->string);
+            }
+            printf("i: %s = %d\n", head_x->string ,debugging_interior);
             debugging_interior += 1;
 
             head_x = head_x->next;
         }
+        
+        head_x = temp_head_x;
+        temp_head_x->next = head_x->next; 
         debugging_interior = 0;
         debugging_exterior += 1;
         head_c = head_c->next;
     }
-    
+
     return head_u;
 
 
