@@ -103,7 +103,9 @@ int initilize_archive_write(char* archive_name)
         }
         else
         {
-            printf("can't overwrite archive\n");
+            my_putstr("my_tar: ");
+            my_putstr(archive_name);
+            my_putstr(": Cannot open: Permission denied\n");
             return -1;
         }
     }
@@ -128,13 +130,18 @@ int initilize_archive_read(char* archive_name)
         }
         else
         {
-            printf("can't overwrite archive\n");
+            my_putstr("my_tar: ");
+            my_putstr(archive_name);
+            my_putstr(": Cannot open: Permission denied\n");
             return -1;
         }
     }
     else
     {
-        printf("Archive does not exist\n");
+        my_putstr("my_tar: ");
+        my_putstr(archive_name);
+        my_putstr(": Cannot open: No such file or directory\n");
+        my_putstr("my_tar: Error is not recoverable: exiting now\n");
         return -2;
     }
 }
