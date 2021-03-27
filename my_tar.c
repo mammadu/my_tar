@@ -251,6 +251,7 @@ node* filter_arguments_by_modtime(node* head_x, node* head_c)
 {
     node* head_u = malloc(sizeof(node));
     node* temp_head_x = head_x;
+    head_u = NULL;
     node* temp_head_u = head_u;
     int debugging_exterior = 0;
     int debugging_interior = 0;
@@ -272,9 +273,21 @@ node* filter_arguments_by_modtime(node* head_x, node* head_c)
 
                 if (argument_mod_time > archive_mod_time)//ATTN! might need a flag to do once per head_c node
                 {
-                    head_u = head_c;
+                    if (head_u == NULL)
+                    {
+                        head_u = head_c;
+                        temp_head_u = head_u;
+                        temp_head_u->next = NULL;                        
+                    }
+                    else
+                    {
+                        append_link(head_c, temp_head_u);
+                        temp_head_u = temp_head_u->next;
+                        temp_head_u->next = NULL;
+                    }
                     //printf("\n I am the head_u->string =  %s\n", head_u->string);
-                    head_u = head_u->next;
+                    // head_u->next = NULL;
+                    // head_u = head_u->next;
 
                     //head_u = head_u->next;
                     //use temp node to holde next address on linked list
@@ -304,7 +317,7 @@ node* filter_arguments_by_modtime(node* head_x, node* head_c)
         head_c = head_c->next;
     }
 
-    //head_u->next = NULL;
+    // head_u->next = NULL;
 
     return head_u;
 
@@ -421,7 +434,8 @@ void select_option(flags* my_flags, int argc, char** argv)
                 node* head_c = linked_list_initializer(argc, argv);
                 node* head_u = filter_arguments_by_modtime(head_x, head_c); 
                 //filter by argument modtime 
-                read_list(head_u);
+                int links = read_list(head_u);
+                printf("number of links = %d\n", links);
                 fd = initilize_archive_write(argv[ARCHIVE_ARG]);
                 
                 
