@@ -36,6 +36,12 @@ typedef struct flag_structs
     char unknown;
 } flags;
 
+typedef struct filtered_arguments
+{
+    char** f_argv;
+    int f_argc;
+} f_arguments;
+
 
 // Read block size.
 // Used 512 bytes to copy tar's block size. :)
@@ -50,5 +56,7 @@ void flag_hunter(int argc, char* argv[], flags* my_flags);
 void select_option(flags* my_flags, int argc, char** argv);
 // void linked_list_initializer(int nodes_qty, char** argv, node* head);
 node* linked_list_initializer(int argc, char** argv);
+f_arguments* filter_arguments_by_modtime(node* head_x, node* head_c, int argc);
+void free_filtered_args(f_arguments* f_arg);
 
 #endif
