@@ -1,22 +1,5 @@
 #include "posix_header_filler.h"
 
-/*
-We are going to have all the function to fill the 
-posix_header structure in this file!
-
-Type Flag	File Type
-0 or null	Regular file
-1	Link to another file already archived
-2	Symbolic link
-3	Character special device
-4	Block special device
-5	Directory
-6	FIFO special file
-7	Reserved
-A-Z	Available for custom usage
-
-*/
-
 void fill_name(char* file_path, header* header)
 {
     int i = 0;
@@ -201,14 +184,6 @@ void fill_typeflag(struct stat statbuf, header* header)
     }
     else if (S_ISLNK(statbuf.st_mode))
     {
-        // if(link points to item in archive)
-        // {
-        //     header->typeflag = '1';
-        // }
-        // else
-        // {
-        //     header->typeflag = '2';
-        // }
         header->typeflag = '2';
     }
     else if (S_ISCHR(statbuf.st_mode))
@@ -379,22 +354,3 @@ void fill_header(char* file_path, header* header)
 
     fill_chksum(header); //It needs to be the last filler function to be called 
 }
-
-// int main()
-// {
-//     header* my_header = malloc(sizeof(header));
-//     printf("enter name of file or directory\n");
-//     char* file_path = malloc(100);
-//     scanf("%s", file_path);
-//     fill_header(file_path, my_header);
-//     int fd = open("test.tar", O_RDWR | O_CREAT, S_IRWXU);
-//     printf("fd = %d\n", fd);
-//     int bytes_written = write(fd, my_header, sizeof(header));
-//     printf("number of bytes written is = %d\n", bytes_written);
-//     printf("errno = %d\n", errno);
-//     close(fd);
-
-//     free(file_path);
-//     free(my_header);
-//     return 0;
-// }
