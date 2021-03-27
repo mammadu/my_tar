@@ -250,32 +250,61 @@ void flag_hunter(int argc, char* argv[], flags* my_flags)
 node* filter_arguments_by_modtime(node* head_x, node* head_c)
 {
     node* head_u = malloc(sizeof(node));
-    node* temp_head_x = head_x->next;
+    node* temp_head_x = head_x;
+    node* temp_head_u = head_u;
     int debugging_exterior = 0;
     int debugging_interior = 0;
+    int flag = 0;
 
     while(head_c != NULL )
     {
-        printf("e: %s = %d\n",head_c->string ,debugging_exterior);
+        //printf("e: %s = %d\n",head_c->string ,debugging_exterior);
         
         while(head_x != NULL)
         {
+            //printf("i: %s = %d\n",head_x->string ,debugging_interior);
+            
             if(my_strcmp(head_c->string, head_x->string) == 0)
             {
-                printf("%s , %s\n", head_c->string, head_x->string);
-            }
-            printf("i: %s = %d\n", head_x->string ,debugging_interior);
-            debugging_interior += 1;
+                int archive_mod_time = my_atoi_base(head_x->header->mtime, 8);
+                int argument_mod_time = my_atoi_base(head_c->header->mtime, 8);
+                flag += 1;
 
+                if (argument_mod_time > archive_mod_time)//ATTN! might need a flag to do once per head_c node
+                {
+                    head_u = head_c;
+                    //printf("\n I am the head_u->string =  %s\n", head_u->string);
+                    head_u = head_u->next;
+
+                    //head_u = head_u->next;
+                    //use temp node to holde next address on linked list
+                    
+                    //printf("%s mod_time = %d \n%s mod_time = %d\n\n", head_c->string, argument_mod_time, head_x->string, archive_mod_time);
+                }
+                
+                // dispose resolution
+            }
+
+
+            
+            //printf("i: %s = %d\n", head_x->string ,debugging_interior);
+            debugging_interior += 1;
+            flag = 0;
             head_x = head_x->next;
         }
-        
+
+        if (flag == 0)
+        {
+            //append current node_c to head_u 
+        }
         head_x = temp_head_x;
-        temp_head_x->next = head_x->next; 
+        
         debugging_interior = 0;
         debugging_exterior += 1;
         head_c = head_c->next;
     }
+
+    //head_u->next = NULL;
 
     return head_u;
 
@@ -392,16 +421,18 @@ void select_option(flags* my_flags, int argc, char** argv)
                 node* head_c = linked_list_initializer(argc, argv);
                 node* head_u = filter_arguments_by_modtime(head_x, head_c); 
                 //filter by argument modtime 
-                
+                read_list(head_u);
                 fd = initilize_archive_write(argv[ARCHIVE_ARG]);
                 
                 
                 
                 fill_archive(head_x, fd);
                 
-                free(head_u);
+                
                 free_linked_list(head_x);
                 free_linked_list(head_c);
+                free_linked_list(head_u);
+
                 close(fd);
             }
         }
