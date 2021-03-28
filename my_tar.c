@@ -141,7 +141,6 @@ int initilize_archive_read(char* archive_name)
         my_putstr("my_tar: ");
         my_putstr(archive_name);
         my_putstr(": Cannot open: No such file or directory\n");
-        my_putstr("my_tar: Error is not recoverable: exiting now\n");
         return -2;
     }
 }
@@ -324,21 +323,17 @@ void option_c(int argc, char** argv, int* error_status)
 
 void option_x(char** argv, int* error_status)
 {
-    if(check_existence(argv[ARCHIVE_ARG]) == 0)
-        {
-            if (is_archive(argv[ARCHIVE_ARG]) == 0)
-            {
-                extract_archive(argv[ARCHIVE_ARG]);
-            }
-        }
-        else 
-        {
-            *error_status = 2;
-            my_putstr("my_tar: ");
-            my_putstr(argv[ARCHIVE_ARG]);
-            my_putstr(": Cannot open: No such file or directory\n");
-            my_putstr("my_tar: Error is not recoverable: exiting now\n");
-        }
+    if(check_existence(argv[ARCHIVE_ARG]) == 0 && is_archive(argv[ARCHIVE_ARG]) == 0)
+    {
+        extract_archive(argv[ARCHIVE_ARG]);
+    }
+    else 
+    {
+        *error_status = 2;
+        my_putstr("my_tar: ");
+        my_putstr(argv[ARCHIVE_ARG]);
+        my_putstr(": Cannot open: No such file or directory\n");
+    }
 }
 
 int select_option(flags* my_flags, int argc, char** argv)
@@ -405,7 +400,6 @@ int select_option(flags* my_flags, int argc, char** argv)
             my_putstr("my_tar: ");
             my_putstr(argv[ARCHIVE_ARG]);
             my_putstr(": Cannot open: No such file or directory\n");
-            my_putstr("my_tar: Error is not recoverable: exiting now\n");
         }
     }
     else if(flag_sum == 2 && my_flags->r > 0)
@@ -432,8 +426,7 @@ int select_option(flags* my_flags, int argc, char** argv)
         {
             my_putstr("my_tar: ");
             my_putstr(argv[ARCHIVE_ARG]);
-            my_putstr(": Cannot open: No such file or directory\n");
-            my_putstr("my_tar: Error is not recoverable: exiting now\n");
+            my_putstr(": Cannot open: No such file or directory\n");            
         }
         
     }   
@@ -451,5 +444,9 @@ int main(int argc, char** argv)
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
     int success = select_option(&flag, argc, argv);
+    if (success != 0)
+    {
+        my_putstr("my_tar: Exiting with failure status due to previous errors\n");
+    }
     return success;
 }
