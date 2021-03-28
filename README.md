@@ -32,3 +32,9 @@ https://www.gnu.org/software/tar/manual/html_node/Blocking.html
 
 https://www.mkssoftware.com/docs/man4/tar.4.asp
 
+
+TODO:
+Make my_tar have an exit status for success and failure
+Find out how to extract specific files from archive
+Create fill_prefix() function
+Find way to append to an archive consisting of just nulls... maybe investigate is_archive?
