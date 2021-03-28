@@ -314,6 +314,14 @@ void free_filtered_args(f_arguments* f_arg)
     free(f_arg);
 }
 
+void option_c(int argc, char** argv, int* error_status)
+{
+    node* head = linked_list_initializer(argc, argv, error_status);
+    int fd = initilize_archive_write(argv[ARCHIVE_ARG]);
+    fill_archive(head, fd);
+    free_linked_list(head);
+}
+
 int select_option(flags* my_flags, int argc, char** argv)
 {   
     int flag_sum = my_flags->c + my_flags->x + my_flags->t + my_flags->u + my_flags->r + my_flags->f;
@@ -327,10 +335,7 @@ int select_option(flags* my_flags, int argc, char** argv)
     }
     else if (flag_sum == 2 && my_flags->c > 0)
     {
-        node* head = linked_list_initializer(argc, argv, &error_status);
-        int fd = initilize_archive_write(argv[ARCHIVE_ARG]);
-        fill_archive(head, fd);
-        free_linked_list(head);
+        option_c(argc, argv, &error_status);
     }
     else if(flag_sum == 2 && my_flags->x > 0)
     {

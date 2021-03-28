@@ -59,5 +59,6 @@ int select_option(flags* my_flags, int argc, char** argv);
 node* linked_list_initializer(int argc, char** argv, int* error_status);
 f_arguments* filter_arguments_by_modtime(node* head_x, node* head_c, int argc);
 void free_filtered_args(f_arguments* f_arg);
+void option_c(int argc, char** argv, int* error_status);
 
 #endif
