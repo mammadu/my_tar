@@ -322,6 +322,25 @@ void option_c(int argc, char** argv, int* error_status)
     free_linked_list(head);
 }
 
+void option_x(char** argv, int* error_status)
+{
+    if(check_existence(argv[ARCHIVE_ARG]) == 0)
+        {
+            if (is_archive(argv[ARCHIVE_ARG]) == 0)
+            {
+                extract_archive(argv[ARCHIVE_ARG]);
+            }
+        }
+        else 
+        {
+            *error_status = 2;
+            my_putstr("my_tar: ");
+            my_putstr(argv[ARCHIVE_ARG]);
+            my_putstr(": Cannot open: No such file or directory\n");
+            my_putstr("my_tar: Error is not recoverable: exiting now\n");
+        }
+}
+
 int select_option(flags* my_flags, int argc, char** argv)
 {   
     int flag_sum = my_flags->c + my_flags->x + my_flags->t + my_flags->u + my_flags->r + my_flags->f;
@@ -333,27 +352,17 @@ int select_option(flags* my_flags, int argc, char** argv)
         my_putstr("Cannot execute. Missing -f option?\n");
         error_status = 2;
     }
+
     else if (flag_sum == 2 && my_flags->c > 0)
     {
         option_c(argc, argv, &error_status);
     }
+
     else if(flag_sum == 2 && my_flags->x > 0)
     {
-        if(check_existence(argv[ARCHIVE_ARG]) == 0)
-        {
-            if (is_archive(argv[ARCHIVE_ARG]) == 0)
-            {
-                extract_archive(argv[ARCHIVE_ARG]);
-            }
-        }
-        else 
-        {
-            my_putstr("my_tar: ");
-            my_putstr(argv[ARCHIVE_ARG]);
-            my_putstr(": Cannot open: No such file or directory\n");
-            my_putstr("my_tar: Error is not recoverable: exiting now\n");
-        }
+        option_x(argv, &error_status);
     }
+
     else if(flag_sum == 2 && my_flags->t > 0)
     {
         if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc == 3)
