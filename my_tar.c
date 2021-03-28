@@ -336,6 +336,27 @@ void option_x(char** argv, int* error_status)
     }
 }
 
+void option_t(int argc, char** argv, int* error_status)
+{
+    if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc == 3)
+    {
+        extract_archive_to_list(argv[ARCHIVE_ARG]);
+    }
+    else
+    {
+        *error_status = 2;
+    }
+    
+    if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc > 3)
+    {
+        extract_archive_to_list_on_demand(argv[ARCHIVE_ARG], argv, argc);
+    }
+    else
+    {
+        *error_status = 2;
+    }
+}
+
 int select_option(flags* my_flags, int argc, char** argv)
 {   
     int flag_sum = my_flags->c + my_flags->x + my_flags->t + my_flags->u + my_flags->r + my_flags->f;
@@ -360,15 +381,9 @@ int select_option(flags* my_flags, int argc, char** argv)
 
     else if(flag_sum == 2 && my_flags->t > 0)
     {
-        if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc == 3)
-        {
-            extract_archive_to_list(argv[ARCHIVE_ARG]);
-        }
-        if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc > 3)
-        {
-            extract_archive_to_list_on_demand(argv[ARCHIVE_ARG], argv, argc);
-        }
+        option_t(argc, argv, &error_status);
     }   
+    
     else if(flag_sum == 2 && my_flags->u > 0)
     {
         if(check_existence(argv[ARCHIVE_ARG]) == 0)
