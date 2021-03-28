@@ -6,7 +6,7 @@ My_tar operates very similarly to the tar program. Replace 'tar' with 'my_tar' t
 Currently only options c, t, r, u, and x are working.
 
 Examples:
-<!-- Make the executable -->
+<!-- Make the my_tar executable -->
 make
 
 <!-- Add files 'a', 'b', and 'c' to archive -->

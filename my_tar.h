@@ -22,6 +22,8 @@
 #define ARCHIVE_FINALE (1024)
 #define ARCHIVE_ARG (2) //for any option, the archive argument is index 2
 #define FIRST_FILE_ARG (3) //for any option, the first file argument is index 3
+#define SUCCESS (0)
+#define FAILURE (2)
 
 //Struct to keep track of the passed flags
 
@@ -53,9 +55,8 @@ int initilize_archive(char* archive_name);
 // int check_permission(char* file_path);
 void flag_initializer(flags* my_flags);
 void flag_hunter(int argc, char* argv[], flags* my_flags);
-void select_option(flags* my_flags, int argc, char** argv);
-// void linked_list_initializer(int nodes_qty, char** argv, node* head);
-node* linked_list_initializer(int argc, char** argv);
+int select_option(flags* my_flags, int argc, char** argv);
+node* linked_list_initializer(int argc, char** argv, int* error_status);
 f_arguments* filter_arguments_by_modtime(node* head_x, node* head_c, int argc);
 void free_filtered_args(f_arguments* f_arg);
 

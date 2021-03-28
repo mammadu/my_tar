@@ -309,18 +309,20 @@ void free_filtered_args(f_arguments* f_arg)
     free(f_arg);
 }
 
-void select_option(flags* my_flags, int argc, char** argv)
+int select_option(flags* my_flags, int argc, char** argv)
 {   
     int flag_sum = my_flags->c + my_flags->x + my_flags->t + my_flags->u + my_flags->r + my_flags->f;
+
+    int error_status = 0;
 
     if (my_flags->f < 1)
     {
         my_putstr("Cannot execute. Missing -f option?\n");
-        return;
+        error_status = 2;
     }
     else if (flag_sum == 2 && my_flags->c > 0)
     {
-        node* head = linked_list_initializer(argc, argv);
+        node* head = linked_list_initializer(argc, argv, &error_status);
         int fd = initilize_archive_write(argv[ARCHIVE_ARG]);
         fill_archive(head, fd);
         free_linked_list(head);
@@ -350,8 +352,8 @@ void select_option(flags* my_flags, int argc, char** argv)
         }
         if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc > 3)
         {
-            extract_archive_to_list_on_demand(argv[ARCHIVE_ARG], argv, argc);    
-        }   
+            extract_archive_to_list_on_demand(argv[ARCHIVE_ARG], argv, argc);
+        }
     }   
     else if(flag_sum == 2 && my_flags->u > 0)
     {
@@ -420,6 +422,7 @@ void select_option(flags* my_flags, int argc, char** argv)
     {
         my_putstr("my_tar: You must specify one of the '-ctrux'\n");
     }
+    return error_status;
 }
 
 //actual main
@@ -428,6 +431,6 @@ int main(int argc, char** argv)
     flags flag;
     flag_initializer(&flag);
     flag_hunter(argc, argv, &flag);
-    select_option(&flag, argc, argv);
-    return 0;
+    int success = select_option(&flag, argc, argv);
+    return success;
 }
