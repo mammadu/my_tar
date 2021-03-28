@@ -147,7 +147,7 @@ int initilize_archive_read(char* archive_name)
 }
 
 //Linked list implementation. Creates the linked list and returns the head of the linked list. Returns NULL if none ofthe arguments are real files.
-node* linked_list_initializer(int argc, char** argv)
+node* linked_list_initializer(int argc, char** argv, int* error_status)
 {
     int i = FIRST_FILE_ARG;
 
@@ -159,12 +159,14 @@ node* linked_list_initializer(int argc, char** argv)
             my_putstr("my_tar: ");
             my_putstr(argv[i]);
             my_putstr(": Cannot stat: No such file or directory\n");
+            *error_status = 2;
         }
         else if (errno == 13)
         {
             my_putstr("my_tar: ");
             my_putstr(argv[i]);
             my_putstr(": Cannot open: Permission denied\n");
+            *error_status = 2;
         }
         else
         {
@@ -172,6 +174,7 @@ node* linked_list_initializer(int argc, char** argv)
             char* error = my_itoa_base(errno, 10);
             my_putstr(error);
             my_putstr(": Review man error for details\n");
+            *error_status = 2;
         }
         i++;
         head = create_link_with_string(argv[i]);
@@ -192,12 +195,14 @@ node* linked_list_initializer(int argc, char** argv)
             my_putstr("my_tar: ");
             my_putstr(argv[i]);
             my_putstr(": No such file or directory\n");
+            *error_status = 2;
         }
         else
         {
             my_putstr("my_tar: ");
             my_putstr(argv[i]);
             my_putstr(": Cannot open: Permission denied\n");
+            *error_status = 2;
         }
         i += 1;
     }
@@ -365,9 +370,9 @@ int select_option(flags* my_flags, int argc, char** argv)
                 int fd = initilize_archive_read(argv[ARCHIVE_ARG]);
                 
                 node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
-                node* head_c = linked_list_initializer(argc, argv);
+                node* head_c = linked_list_initializer(argc, argv, &error_status);
                 f_arguments* filtered_args = filter_arguments_by_modtime(head_x, head_c, argc);
-                node* head_u = linked_list_initializer(filtered_args->f_argc, filtered_args->f_argv);
+                node* head_u = linked_list_initializer(filtered_args->f_argc, filtered_args->f_argv, &error_status);
                 //filter by argument modtime 
                 int links = read_list(head_u);
                 append_link(head_u, head_x);
@@ -398,7 +403,7 @@ int select_option(flags* my_flags, int argc, char** argv)
                 //option_r
                 int fd = initilize_archive_read(argv[ARCHIVE_ARG]);
                 node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
-                node* head_c = linked_list_initializer(argc, argv);
+                node* head_c = linked_list_initializer(argc, argv, &error_status);
                 fd = initilize_archive_write(argv[ARCHIVE_ARG]);
                 
                 append_link( head_c, head_x);
