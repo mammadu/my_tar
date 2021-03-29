@@ -352,6 +352,36 @@ void option_t(int argc, char** argv, int* error_status)
     }
 }
 
+void option_u(int argc, char** argv, int* error_status)
+{
+    if(check_existence(argv[ARCHIVE_ARG]) == 0 && is_archive(argv[ARCHIVE_ARG]) == 0)
+    {
+        int fd = initilize_archive_read(argv[ARCHIVE_ARG]);
+        
+        node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
+        node* head_c = linked_list_initializer(argc, argv, error_status);
+        f_arguments* filtered_args = filter_arguments_by_modtime(head_x, head_c, argc);
+        node* head_u = linked_list_initializer(filtered_args->f_argc, filtered_args->f_argv, error_status);
+        int links = read_list(head_u);
+        append_link(head_u, head_x);
+        fd = initilize_archive_write(argv[ARCHIVE_ARG]);
+        
+        fill_archive(head_x, fd);
+        free_filtered_args(filtered_args);
+        free_linked_list(head_x);
+        free_linked_list(head_c);
+
+        close(fd);
+    }
+    else 
+    {
+        my_putstr("my_tar: ");
+        my_putstr(argv[ARCHIVE_ARG]);
+        my_putstr(": Cannot open: No such file or directory\n");
+        *error_status = 2;
+    }
+}
+
 int select_option(flags* my_flags, int argc, char** argv)
 {   
     int flag_sum = my_flags->c + my_flags->x + my_flags->t + my_flags->u + my_flags->r + my_flags->f;
@@ -381,36 +411,7 @@ int select_option(flags* my_flags, int argc, char** argv)
     
     else if(flag_sum == 2 && my_flags->u > 0)
     {
-        if(check_existence(argv[ARCHIVE_ARG]) == 0)
-        {
-            if (is_archive(argv[ARCHIVE_ARG]) == 0)
-            {
-                //option_u
-                int fd = initilize_archive_read(argv[ARCHIVE_ARG]);
-                
-                node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
-                node* head_c = linked_list_initializer(argc, argv, &error_status);
-                f_arguments* filtered_args = filter_arguments_by_modtime(head_x, head_c, argc);
-                node* head_u = linked_list_initializer(filtered_args->f_argc, filtered_args->f_argv, &error_status);
-                //filter by argument modtime 
-                int links = read_list(head_u);
-                append_link(head_u, head_x);
-                fd = initilize_archive_write(argv[ARCHIVE_ARG]);
-                
-                fill_archive(head_x, fd);
-                free_filtered_args(filtered_args);
-                free_linked_list(head_x);
-                free_linked_list(head_c);
-
-                close(fd);
-            }
-        }
-        else 
-        {
-            my_putstr("my_tar: ");
-            my_putstr(argv[ARCHIVE_ARG]);
-            my_putstr(": Cannot open: No such file or directory\n");
-        }
+        option_u(argc, argv, &error_status);
     }
     else if(flag_sum == 2 && my_flags->r > 0)
     {

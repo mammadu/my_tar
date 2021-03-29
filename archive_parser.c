@@ -162,7 +162,6 @@ int extract_archive_to_list_on_demand(char* archive_name, char** argv, int argc)
     return erro_status;
 }
 
-
 void archive_to_linked_list(int fd, int current_position, node* head)
 {
      while (data_seeker(fd, current_position) > 0)
