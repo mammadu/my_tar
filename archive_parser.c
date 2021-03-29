@@ -138,22 +138,28 @@ void extract_archive_to_list(char* archive_name)
     close(fd);
 }
 
-void extract_archive_to_list_on_demand(char* archive_name, char** argv, int argc)
+int extract_archive_to_list_on_demand(char* archive_name, char** argv, int argc)
 {
     int fd = initilize_archive_read(archive_name);
     node* head = fill_link(fd);
     int current_position = lseek(fd, 0, SEEK_CUR);
     int i = 3;
+    int status = 0;
     //creates linked list of files from achive
     archive_to_linked_list(fd, current_position, head);
 
     while(i < argc)
     {
-        read_list_on_demand(head, argv[i]);
+        status = read_list_on_demand(head, argv[i]);
         i += 1;
     }
     free_linked_list(head);
     close(fd);
+    
+    if (status == 0)
+        return 2;
+    else
+        return 0;
 }
 
 

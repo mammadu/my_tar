@@ -21,7 +21,7 @@
 node* extract_archive_to_node(char* archive_name, node* head, int fd);
 void archive_to_linked_list(int fd, int current_position, node* head);
 void extract_archive_to_list(char* archive_name);
-void extract_archive_to_list_on_demand(char* archive_name, char** argv, int argc);
+int extract_archive_to_list_on_demand(char* archive_name, char** argv, int argc);
 int file_creator_from_list(node* head);
 int is_archive(char* file_path);
 int check_permission(char* file_path);

@@ -344,7 +344,7 @@ void option_t(int argc, char** argv, int* error_status)
     }
     else if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc > 3)
     {
-        extract_archive_to_list_on_demand(argv[ARCHIVE_ARG], argv, argc);
+        *error_status = extract_archive_to_list_on_demand(argv[ARCHIVE_ARG], argv, argc);
     }    
     else
     {
