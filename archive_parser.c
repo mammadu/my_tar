@@ -145,21 +145,21 @@ int extract_archive_to_list_on_demand(char* archive_name, char** argv, int argc)
     int current_position = lseek(fd, 0, SEEK_CUR);
     int i = 3;
     int status = 0;
+    int erro_status = 0;
     //creates linked list of files from achive
     archive_to_linked_list(fd, current_position, head);
 
     while(i < argc)
     {
         status = read_list_on_demand(head, argv[i]);
+        if (status == 0)
+            erro_status = 2;    
         i += 1;
     }
     free_linked_list(head);
     close(fd);
     
-    if (status == 0)
-        return 2;
-    else
-        return 0;
+    return erro_status;
 }
 
 
