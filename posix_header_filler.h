@@ -92,6 +92,4 @@ void fill_uname(int statbuf, header* header);
 void fill_gname(int statbuf, header* header);
 void fill_header(char* file_path, header* header);
 
-
-
 #endif
