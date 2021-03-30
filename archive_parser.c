@@ -24,6 +24,7 @@ int data_seeker(int fd, int current)
     return bytes;
 }
 
+
 //returns the sum of all the characters in a string
 int string_byte_sum(char* str, int str_len)
 {
@@ -42,10 +43,27 @@ int is_archive(char* file_path)
     int fd = open(file_path, O_RDONLY);
     if (fd == -1)
     {
-        my_putstr("my_tar: ");
-        my_putstr(file_path);
-        my_putstr(": Cannot open: Permission denied or file does not exist\n");
-        my_putstr("my_tar: Error is not recoverable: exiting now\n");
+
+        if (errno == 2)
+        {
+            my_putstr("my_tar: ");
+            my_putstr(file_path);
+            my_putstr(": Cannot stat: No such file or directory\n");
+        }
+        else if (errno == 13)
+        {
+            my_putstr("my_tar: ");
+            my_putstr(file_path);
+            my_putstr(": Cannot open: Permission denied\n");
+        }
+        else
+        {
+            my_putstr("my_tar: ERRNO =");
+            char* error = my_itoa_base(errno, 10);
+            my_putstr(error);
+            my_putstr(": Review man error for details\n");
+            free(error);
+        }
         close(fd);
         return -1;
     }
@@ -124,9 +142,38 @@ int file_creator_from_list(node* head)
     return index;
 }
 
+//returns the file descriptor after checking for existance and permissions.
+int initialize_archive_read(char* archive_name)
+{
+    int existence = check_existence(archive_name);
+    if (existence == 0)
+    {
+        int permission = check_permission(archive_name);
+        if (permission == 7 || permission == 6 || permission == 5 || permission == 4)
+        {
+            int fd = open(archive_name, O_RDONLY); //debug how to open files. Perhaps use check existance function????
+            return fd;
+        }
+        else
+        {
+            my_putstr("my_tar: ");
+            my_putstr(archive_name);
+            my_putstr(": Cannot open: Permission denied\n");
+            return -1;
+        }
+    }
+    else
+    {
+        my_putstr("my_tar: ");
+        my_putstr(archive_name);
+        my_putstr(": Cannot open: No such file or directory\n");
+        return -2;
+    }
+}
+
 void extract_archive_to_list(char* archive_name)
 {
-    int fd = initilize_archive_read(archive_name);
+    int fd = initialize_archive_read(archive_name);
     node* head = fill_link(fd);
     int current_position = lseek(fd, 0, SEEK_CUR);
     
@@ -140,7 +187,7 @@ void extract_archive_to_list(char* archive_name)
 
 int extract_archive_to_list_on_demand(char* archive_name, char** argv, int argc)
 {
-    int fd = initilize_archive_read(archive_name);
+    int fd = initialize_archive_read(archive_name);
     node* head = fill_link(fd);
     int current_position = lseek(fd, 0, SEEK_CUR);
     int i = 3;
@@ -175,7 +222,7 @@ void archive_to_linked_list(int fd, int current_position, node* head)
 
 void extract_archive(char* archive_name)
 {
-    int fd = initilize_archive_read(archive_name);
+    int fd = initialize_archive_read(archive_name);
     node* head = fill_link(fd);
     int current_position = lseek(fd, 0, SEEK_CUR);
     

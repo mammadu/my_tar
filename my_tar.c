@@ -90,7 +90,7 @@ int check_permission(char* file_path)
 */
 
 //returns the file descriptor after checking for existance and permissions.
-int initilize_archive_write(char* archive_name)
+int initialize_archive_write(char* archive_name)
 {
     int existence = check_existence(archive_name);
     if (existence == 0)
@@ -116,35 +116,6 @@ int initilize_archive_write(char* archive_name)
     }
 }
 
-//returns the file descriptor after checking for existance and permissions.
-int initilize_archive_read(char* archive_name)
-{
-    int existence = check_existence(archive_name);
-    if (existence == 0)
-    {
-        int permission = check_permission(archive_name);
-        if (permission == 7 || permission == 6 || permission == 5 || permission == 4)
-        {
-            int fd = open(archive_name, O_RDONLY); //debug how to open files. Perhaps use check existance function????
-            return fd;
-        }
-        else
-        {
-            my_putstr("my_tar: ");
-            my_putstr(archive_name);
-            my_putstr(": Cannot open: Permission denied\n");
-            return -1;
-        }
-    }
-    else
-    {
-        my_putstr("my_tar: ");
-        my_putstr(archive_name);
-        my_putstr(": Cannot open: No such file or directory\n");
-        return -2;
-    }
-}
-
 //Linked list implementation. Creates the linked list and returns the head of the linked list. Returns NULL if none ofthe arguments are real files.
 node* linked_list_initializer(int argc, char** argv, int* error_status)
 {
@@ -158,14 +129,14 @@ node* linked_list_initializer(int argc, char** argv, int* error_status)
             my_putstr("my_tar: ");
             my_putstr(argv[i]);
             my_putstr(": Cannot stat: No such file or directory\n");
-            *error_status = 2;
+            *error_status = FAILURE;
         }
         else if (errno == 13)
         {
             my_putstr("my_tar: ");
             my_putstr(argv[i]);
             my_putstr(": Cannot open: Permission denied\n");
-            *error_status = 2;
+            *error_status = FAILURE;
         }
         else
         {
@@ -173,7 +144,8 @@ node* linked_list_initializer(int argc, char** argv, int* error_status)
             char* error = my_itoa_base(errno, 10);
             my_putstr(error);
             my_putstr(": Review man error for details\n");
-            *error_status = 2;
+            *error_status = FAILURE;
+            free(error);
         }
         i++;
         head = create_link_with_string(argv[i]);
@@ -194,14 +166,14 @@ node* linked_list_initializer(int argc, char** argv, int* error_status)
             my_putstr("my_tar: ");
             my_putstr(argv[i]);
             my_putstr(": No such file or directory\n");
-            *error_status = 2;
+            *error_status = FAILURE;
         }
         else
         {
             my_putstr("my_tar: ");
             my_putstr(argv[i]);
             my_putstr(": Cannot open: Permission denied\n");
-            *error_status = 2;
+            *error_status = FAILURE;
         }
         i += 1;
     }
@@ -316,7 +288,7 @@ void free_filtered_args(f_arguments* f_arg)
 void option_c(int argc, char** argv, int* error_status)
 {
     node* head = linked_list_initializer(argc, argv, error_status);
-    int fd = initilize_archive_write(argv[ARCHIVE_ARG]);
+    int fd = initialize_archive_write(argv[ARCHIVE_ARG]);
     fill_archive(head, fd);
     free_linked_list(head);
 }
@@ -329,7 +301,7 @@ void option_x(char** argv, int* error_status)
     }
     else 
     {
-        *error_status = 2;
+        *error_status = FAILURE;
         my_putstr("my_tar: ");
         my_putstr(argv[ARCHIVE_ARG]);
         my_putstr(": Cannot open: No such file or directory\n");
@@ -338,17 +310,20 @@ void option_x(char** argv, int* error_status)
 
 void option_t(int argc, char** argv, int* error_status)
 {
-    if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc == 3)
+    if(is_archive(argv[ARCHIVE_ARG]) == 0)
     {
-        extract_archive_to_list(argv[ARCHIVE_ARG]);
+        if (argc == 3)
+        {
+            extract_archive_to_list(argv[ARCHIVE_ARG]);
+        }
+        else if (argc > 3)
+        {
+            *error_status = extract_archive_to_list_on_demand(argv[ARCHIVE_ARG], argv, argc);
+        }
     }
-    else if (is_archive(argv[ARCHIVE_ARG]) == 0 && argc > 3)
-    {
-        *error_status = extract_archive_to_list_on_demand(argv[ARCHIVE_ARG], argv, argc);
-    }    
     else
     {
-        *error_status = 2;
+        *error_status = FAILURE;
     }
 }
 
@@ -356,15 +331,14 @@ void option_u(int argc, char** argv, int* error_status)
 {
     if(check_existence(argv[ARCHIVE_ARG]) == 0 && is_archive(argv[ARCHIVE_ARG]) == 0)
     {
-        int fd = initilize_archive_read(argv[ARCHIVE_ARG]);
+        int fd = initialize_archive_read(argv[ARCHIVE_ARG]);
         
         node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
         node* head_c = linked_list_initializer(argc, argv, error_status);
         f_arguments* filtered_args = filter_arguments_by_modtime(head_x, head_c, argc);
         node* head_u = linked_list_initializer(filtered_args->f_argc, filtered_args->f_argv, error_status);
-        int links = read_list(head_u);
         append_link(head_u, head_x);
-        fd = initilize_archive_write(argv[ARCHIVE_ARG]);
+        fd = initialize_archive_write(argv[ARCHIVE_ARG]);
         
         fill_archive(head_x, fd);
         free_filtered_args(filtered_args);
@@ -378,7 +352,33 @@ void option_u(int argc, char** argv, int* error_status)
         my_putstr("my_tar: ");
         my_putstr(argv[ARCHIVE_ARG]);
         my_putstr(": Cannot open: No such file or directory\n");
-        *error_status = 2;
+        *error_status = FAILURE;
+    }
+}
+
+void option_r(int argc, char** argv, int* error_status)
+{
+    if(check_existence(argv[ARCHIVE_ARG]) == 0 && is_archive(argv[ARCHIVE_ARG]) == 0)
+    {
+        //option_r
+        int fd = initialize_archive_read(argv[ARCHIVE_ARG]);
+        node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
+        node* head_c = linked_list_initializer(argc, argv, error_status);
+        fd = initialize_archive_write(argv[ARCHIVE_ARG]);
+        
+        append_link( head_c, head_x);
+
+        fill_archive(head_x, fd);
+    
+        free_linked_list(head_x);
+        close(fd);
+    }
+    else 
+    {
+        my_putstr("my_tar: ");
+        my_putstr(argv[ARCHIVE_ARG]);
+        my_putstr(": Cannot open: No such file or directory\n");
+        *error_status = FAILURE;
     }
 }
 
@@ -386,12 +386,12 @@ int select_option(flags* my_flags, int argc, char** argv)
 {   
     int flag_sum = my_flags->c + my_flags->x + my_flags->t + my_flags->u + my_flags->r + my_flags->f;
 
-    int error_status = 0;
+    int error_status = SUCCESS;
 
     if (my_flags->f < 1)
     {
         my_putstr("Cannot execute. Missing -f option?\n");
-        error_status = 2;
+        error_status = FAILURE;
     }
 
     else if (flag_sum == 2 && my_flags->c > 0)
@@ -407,7 +407,7 @@ int select_option(flags* my_flags, int argc, char** argv)
     else if(flag_sum == 2 && my_flags->t > 0)
     {
         option_t(argc, argv, &error_status);
-    }   
+    }
     
     else if(flag_sum == 2 && my_flags->u > 0)
     {
@@ -415,35 +415,12 @@ int select_option(flags* my_flags, int argc, char** argv)
     }
     else if(flag_sum == 2 && my_flags->r > 0)
     {
-        if(check_existence(argv[ARCHIVE_ARG]) == 0)
-        {
-            if (is_archive(argv[ARCHIVE_ARG]) == 0)
-            {
-                //option_r
-                int fd = initilize_archive_read(argv[ARCHIVE_ARG]);
-                node* head_x = extract_archive_to_node(argv[ARCHIVE_ARG], head_x, fd);
-                node* head_c = linked_list_initializer(argc, argv, &error_status);
-                fd = initilize_archive_write(argv[ARCHIVE_ARG]);
-                
-                append_link( head_c, head_x);
-
-                fill_archive(head_x, fd);
-            
-                free_linked_list(head_x);
-                close(fd);
-            }
-        }
-        else 
-        {
-            my_putstr("my_tar: ");
-            my_putstr(argv[ARCHIVE_ARG]);
-            my_putstr(": Cannot open: No such file or directory\n");            
-        }
-        
+        option_r(argc, argv, &error_status);
     }   
     else
     {
         my_putstr("my_tar: You must specify one of the '-ctrux'\n");
+        error_status = FAILURE;
     }
     return error_status;
 }

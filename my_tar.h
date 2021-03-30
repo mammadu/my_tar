@@ -50,17 +50,25 @@ typedef struct filtered_arguments
 // Source: http://www.gnu.org/software/tar/manual/html_node/Blocking.html
 
 
-int initilize_archive(char* archive_name);
-// int check_existence(char* file_path);
-// int check_permission(char* file_path);
+void write_header(node* node, int fd);
+int end_of_file_nulls_size(int file_size);
+char* end_of_file_nulls(int file_size);
+char* end_of_archive();
+void write_content(node* node, int fd);
+int fill_archive(node* head, int fd);
+int check_existence(char* file_path);
+int check_permission(char* file_path);
+int initialize_archive_write(char* archive_name);
+node* linked_list_initializer(int argc, char** argv, int* error_status);
 void flag_initializer(flags* my_flags);
 void flag_hunter(int argc, char* argv[], flags* my_flags);
-int select_option(flags* my_flags, int argc, char** argv);
-node* linked_list_initializer(int argc, char** argv, int* error_status);
 f_arguments* filter_arguments_by_modtime(node* head_x, node* head_c, int argc);
 void free_filtered_args(f_arguments* f_arg);
 void option_c(int argc, char** argv, int* error_status);
 void option_x(char** argv, int* error_status);
-
+void option_t(int argc, char** argv, int* error_status);
+void option_u(int argc, char** argv, int* error_status);
+void option_r(int argc, char** argv, int* error_status);
+int select_option(flags* my_flags, int argc, char** argv);
 
 #endif

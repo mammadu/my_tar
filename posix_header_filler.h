@@ -74,38 +74,24 @@ typedef struct posix_header
                                 /* 500 */
 } header;
 
+void fill_name(char* file_path, header* header);
+void fill_mode(int statmode, header* header);
+void fill_uid(int statuid,  header* header );
+void fill_gid(int statguid, header* header);
+char* zero_filled_string(int len, int field_size);
+void fill_size(int statsize, header* header);
+void fill_mtime(int mtime, header* header);
+void fill_chksum(header* header);
+void fill_typeflag(struct stat statbuf, header* header);
+void fill_linkname(char* file_path, header* header);
+void fill_magic(header* header);
+void fill_version(header* header);
+void fill_devmajor(int device_id, header* header);
+void fill_devminor(int device_id, header* header);
+void fill_uname(int statbuf, header* header);
+void fill_gname(int statbuf, header* header);
 void fill_header(char* file_path, header* header);
 
-void fill_name(char* file_path, header* header);
 
-void fill_mode(int statmode, header* header);
-
-void fill_uid(int statuid,  header* header);
-
-void fill_gid(int statguid, header* header);
-
-char* zero_filled_string(int len, int field_size);
-
-void fill_size(int statsize, header* header);
-
-void fill_mtime(int mtime, header* header);
-
-void fill_chksum(header* header);
-
-void fill_typeflag(struct stat statbuf, header* header);
-
-void fill_linkname(char* file_path, header* header);
-
-void fill_magic(header* header);
-
-void fill_version(header* header);
-
-void fill_devmajor(int device_id, header* header);
-
-void fill_devminor(int device_id, header* header);
-
-void fill_uname(int statbuf, header* header);
-
-void fill_gname(int statbuf, header* header);
 
 #endif

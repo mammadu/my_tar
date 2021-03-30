@@ -172,10 +172,6 @@ void fill_chksum(header* header)
     free(zero_buffer_combination);
 }
 
-/*Haven't figured out what to do about the following:
- Links to already archived files
- Reserved files
- */
 void fill_typeflag(struct stat statbuf, header* header)
 {
     if (S_ISREG(statbuf.st_mode))
