@@ -1,0 +1,18 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+!Makefile
+*.o 
+*.out
+*.tar
+core.*
+tar
+.theia/
+test.c
+test_dir/
